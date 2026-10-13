@@ -45,7 +45,7 @@ Registro de fases:
 
 ## 2. Las decisiones que más te van a preguntar
 
-Cada una tiene la decisión, por qué, qué descartaste y la frase para el oral.
+Cada una tiene la decisión, por qué, qué descartaste y la frase para el oral. Las mismas decisiones, ordenadas por tema y separadas entre lo que se vio en la cátedra y lo que no, están en la sección 15. El push, paso a paso, en la 16.
 
 ### 2.1 Las reglas viven en la base y se anticipan en Angular
 
@@ -306,6 +306,8 @@ Cada una tiene la decisión, por qué, qué descartaste y la frase para el oral.
 
 ### 2.25 Recuperación de clave y el correo de Supabase
 
+Explicada a fondo, con el código de cada paso, en la sección 17.
+
 | | |
 |---|---|
 | Flujo | `/recuperar-clave` pide el email y llama a `AuthApi.recuperarClave()`, que usa `supabase.auth.resetPasswordForEmail(email, { redirectTo: origen + '/restablecer-clave' })`. Supabase manda un mail con un enlace firmado, de un solo uso y con vencimiento. Al abrirlo, `supabase-js` lee el token de la URL y arma una sesión de recuperación. `/restablecer-clave` espera `sesion.inicializada`, pide la clave nueva dos veces y llama a `AuthApi.cambiarClave()` (`supabase.auth.updateUser({ password })`) (RF-02) |
@@ -340,7 +342,7 @@ Reglas que nunca se rompen:
 
 ## 4. Recorrido por carpetas y archivos
 
-Columnas: archivo, qué hace, requerimiento que cubre y por qué existe. Las carpetas de organización están en inglés, como en clase (`shared/`). El dominio está en español. Los nombres de archivo son los que genera el CLI 22.2. ✅ marca lo que ya existe; lo que falta lleva la fase en que llega.
+El árbol completo, cómo se comunican las carpetas y la matriz de trazabilidad están en la sección 13. Columnas: archivo, qué hace, requerimiento que cubre y por qué existe. Las carpetas de organización están en inglés, como en clase (`shared/`). El dominio está en español. Los nombres de archivo son los que genera el CLI 22.2. ✅ marca lo que ya existe; lo que falta lleva la fase en que llega.
 
 ### 4.1 Raíz del proyecto
 
@@ -380,7 +382,7 @@ Todo lo de esta tabla existe salvo lo marcado con la fase en que llega.
 | Archivo o carpeta | Qué hace | Req. | Por qué existe |
 |---|---|---|---|
 | `services/supabase.client.ts` ✅ | `createClient(url, supabaseAnonKey)` | — | Un único cliente para toda la app (Clase 6, lámina 6) |
-| `models/*.model.ts` ✅ (`auth`, `butaca`, `candy`, `compra`, `configuracion`, `cupon`, `fidelizacion`, `funcion`, `notificacion`, `pago`, `pelicula`, `perfil`, `sala`, `validacion`; `auditoria` y `reporte`; `menu` con los grupos de la barra; falta `resena` en F12) | Interfaces por entidad, uniones de literales, etiquetas y borradores de formulario | RNF-08 | Tipado estricto: el compilador avisa si se usa un campo que no existe |
+| `models/*.model.ts` ✅ (`auth`, `butaca`, `candy`, `compra`, `configuracion`, `cupon`, `fidelizacion`, `funcion`, `notificacion`, `pago`, `pelicula`, `perfil`, `sala`, `validacion`; `auditoria` y `reporte`; `menu` con los grupos de la barra; `resena`) | Interfaces por entidad, uniones de literales, etiquetas y borradores de formulario | RNF-08 | Tipado estricto: el compilador avisa si se usa un campo que no existe |
 | `api/configuracion-api.ts` ✅ | Configuración y precios | RF-39 | Lo usan precios, programación, ficha, mapa y cancelación |
 | `api/auth-api.ts` ✅ | Registro, login con clave, OAuth, anónimo, recuperación, cambio de clave y salida | RF-01, RF-02, RNF-09 | Aísla `supabase.auth` |
 | `api/perfil-api.ts` ✅ | Leer y guardar el perfil y los datos sensibles | RF-04, RF-86, S-16 | Separa el acceso a datos del formulario |
@@ -388,8 +390,8 @@ Todo lo de esta tabla existe salvo lo marcado con la fase en que llega.
 | `api/sala-api.ts`, `funcion-api.ts` ✅ | ABM de salas y butacas; funciones y RPC de programación | RF-16 a RF-25 | — |
 | `api/ocupacion-api.ts` ✅ | Leer, retener y liberar butacas | RF-26 a RF-29 | La única puerta al mapa |
 | `api/compra-api.ts` ✅ | Confirmar (con candy, cupón y crédito), historial, comprobante y `cancelar`, que devuelve el crédito acreditado | RF-05, RF-37, RF-73 | — |
-| `api/candy-api.ts`, `cupon-api.ts` ✅, `fidelizacion-api.ts` (✅ el crédito; puntos y recompensas en F13) | Candy, cupones, crédito, puntos y recompensas | RF-40 a RF-50, RF-64 a RF-66, RF-75 | El cliente no lee `cupones`: los sugeridos y la validación van por RPC. El saldo de crédito sale de la vista `saldos_credito`; sin movimientos no hay fila y el saldo es 0 |
-| `api/notificacion-api.ts` ✅, `resena-api.ts` (F12), `alerta-api.ts` ✅ | Bandeja, reseñas y alertas | RF-61 a RF-63, RF-69, RF-87 a RF-89 | — |
+| `api/candy-api.ts`, `cupon-api.ts` ✅, `fidelizacion-api.ts` ✅ | Candy, cupones, crédito, puntos y recompensas | RF-40 a RF-50, RF-64 a RF-66, RF-75 | El cliente no lee `cupones`: los sugeridos y la validación van por RPC. El saldo de crédito sale de la vista `saldos_credito`; sin movimientos no hay fila y el saldo es 0 |
+| `api/notificacion-api.ts` ✅, `resena-api.ts` ✅, `alerta-api.ts` ✅ | Bandeja, reseñas y alertas | RF-61 a RF-63, RF-69, RF-87 a RF-89 | — |
 | `api/validacion-api.ts` ✅ | RPC `validar_qr` | RF-55 a RF-59 | — |
 | `api/push-api.ts` ✅ | RPC `guardar_suscripcion_push` (endpoint y las dos claves del navegador) y `borrar_suscripcion_push` | RF-87 a RF-89, RNF-16 | `suscripciones_push` solo se escribe por estas RPC (F16) |
 | `api/imagen-api.ts`, `cuenta-interna-api.ts`, `reporte-api.ts`, `auditoria-api.ts` ✅ | Storage, alta de cuentas internas (segundo cliente y `asignar_rol`), las tres RPC de reporte y el log (hasta 200 registros con el perfil embebido; el usuario se busca por una parte del email) | RF-06, RF-79 a RF-85, RNF-13 | — |
@@ -414,10 +416,12 @@ Todo lo de esta tabla existe salvo lo marcado con la fase en que llega.
 | `rules/cancelacion.ts` ✅ | `limiteCancelacion` y `motivoNoCancelable`: repite las condiciones de `cancelar_compra` (ya cancelada, fuera de plazo, algo usado) | RF-73, RN-18 | El botón explica por qué no se puede cancelar sin llamar a la base |
 | `rules/reportes.ts` ✅ | Fechas del rango (formato, orden y conversión), atajos Hoy, 7 días y mes, totales de la facturación y agrupación de las más vistas por período | RF-79 a RF-82 | La tabla, el PDF y el Excel suman con la misma función |
 | `rules/auditoria.ts` ✅ | Campos que cambiaron, valor como texto, nombre de la fila afectada, quién actuó ("Sistema" sin usuario) y el rango en momentos de Buenos Aires | RF-83, RF-85 | El log muestra solo lo que cambió, no la fila entera |
-| `rules/puntos.ts` (F13) | Puntos ganados y saldos | RN-12, RN-19 | — |
+| `rules/puntos.ts` ✅ | Puntos ganados, disponibles y pendientes, y el texto con punto de miles | RN-12, RN-19 | — |
 | `rules/asignacion.ts` ✅ | Vista previa de la asignación de salas | RF-24, RN-01, RN-03 | Se prueba con Vitest |
 | `rules/contiguidad.ts` ✅ | `motivoNoContiguas` | RN-25 | La base del validador |
 | `rules/tarjeta.ts` ✅ | Luhn, vencimiento y CVV | S-08 | Avisa antes de enviar el pago |
+| `rules/resena.ts` ✅ | Texto del promedio, cantidad de reseñas y estrellas llenas | RF-61, RF-62 | La ficha, la tarjeta y `Estrellas` muestran el promedio igual |
+| `rules/mascara.ts` ✅ | Separadores de fecha, hora, tarjeta y vencimiento mientras se escribe, y dónde queda el cursor | RNF-19 | La lógica de `appMascara`, probada con Vitest (10/10) |
 | `guard/invitado-guard.ts` ✅ | `invitadoGuard` (`canActivate`) | RF-02 | Quien ya entró no vuelve al login |
 | `guard/cliente-guard.ts`, `empleado-guard.ts`, `admin-guard.ts` ✅ | Un `CanMatchFn` por rol; sin sesión mandan al login con `volver` | RNF-06 | Como el `adminGuard` de Clase 7, lámina 7 |
 | `guard/puede-comprar-guard.ts` ✅ | Visitante o cliente con perfil completo | RF-86 | — |
@@ -428,8 +432,9 @@ Todo lo de esta tabla existe salvo lo marcado con la fase en que llega.
 | `pipes/edad-pipe.ts` ✅ | Fecha de nacimiento → años | RNF-26, RF-07 | — |
 | `directives/highlight-butaca.ts` ✅ | De atributo: clases, `aria-label`, `aria-pressed` y `aria-disabled` de cada butaca | RNF-27, RF-30, RNF-20 | Como `appHighlight` (Clase 7, lámina 14). El mapa no depende solo del color |
 | `directives/restrict-edad.ts` ✅ | Estructural: muestra el bloque Comprar solo si la edad alcanza | RNF-27, RF-35 | Como `*appIfOverdue` (Clase 7, lámina 15). El motivo lo muestra el componente con `@if` |
+| `directives/mascara-entrada.ts` ✅ | De atributo (`input[appMascara]`): pone los separadores mientras se escribe y le avisa el texto al formulario. Va en fechas, horas, tarjeta y vencimiento | RNF-19 | Mejora de experiencia del 10/10 (`d788b9b`); la lógica está en `rules/mascara.ts` |
 | `validators/butacas-contiguas.ts` ✅ | Regla de Signal Forms sobre `validate()` | RNF-28, RF-90 | — |
-| `components/` ✅ (`tarjeta-pelicula`, `mapa-butacas`, `contador-retencion`, `selector-dias`, `selector-fecha`, `selector-hora`, `selector-horario`, `indicador-pasos`, `resumen-compra`, `vista-comprobante`, `formulario-perfil`, `bandeja-notificaciones`, `grafico-barras`, `menu-principal`, `ver-clave`, `boton-alerta`; falta `estrellas` en F12) | Tarjeta de película, mapa, selectores, contador, indicador de pasos, resumen, comprobante, formulario de perfil, bandeja, barra de navegación, botón para ver la clave y botón de alerta | RNF-03 | Se reutilizan en varias pantallas o áreas |
+| `components/` ✅ (`tarjeta-pelicula`, `mapa-butacas`, `contador-retencion`, `selector-dias`, `selector-fecha`, `selector-hora`, `selector-horario`, `indicador-pasos`, `resumen-compra`, `vista-comprobante`, `formulario-perfil`, `bandeja-notificaciones`, `grafico-barras`, `menu-principal`, `ver-clave`, `boton-alerta`, `estrellas`) | Tarjeta de película, mapa, selectores, contador, indicador de pasos, resumen, comprobante, formulario de perfil, bandeja, barra de navegación, botón para ver la clave, botón de alerta y estrellas | RNF-03 | Se reutilizan en varias pantallas o áreas |
 | `utils/errores.ts` ✅ y `errores.spec.ts` ✅ | Traduce los códigos de error de la base, las restricciones por nombre y Supabase Auth a mensajes | — | Un solo lugar para los textos de error. Es la primera prueba de función pura |
 | `utils/rutas.ts` ✅ | `rutaSegura`: el `volver` de la URL solo puede ser una ruta interna | RF-86 | Evita que un enlace armado lleve a otro sitio después del login |
 | `utils/archivos.ts` ✅ | `nombreSeguro` | RNF-13 | La normalización de `attachments.ts` de clase |
@@ -443,7 +448,7 @@ Todas existen.
 |---|---|---|
 | `inicio/` ✅ | Top 3 (`top_peliculas`, por ventas) y cartelera con buscador y filtros por género, clasificación, formato e idioma | RF-13, RF-14 |
 | `proximamente/` ✅ | Próximos estrenos con la fecha y `BotonAlerta` debajo de cada tarjeta | RF-68, RF-69 |
-| `pelicula-detalle/` ✅ | Ficha y funciones agrupadas por día, con precios por formato. Recibe la película del resolver; Comprar con `*appRestrictEdad` y el motivo con `@if`; `BotonAlerta` si es un próximo estreno. Las reseñas llegan en F12 | RF-15, RF-35, RF-62, RF-69 |
+| `pelicula-detalle/` ✅ | Ficha y funciones de un día por vez con los chips de `SelectorFecha`, con precios por formato. Recibe la película del resolver; Comprar con `*appRestrictEdad` y el motivo con `@if`; `BotonAlerta` si es un próximo estreno. Calificación en los detalles y sección Reseñas | RF-15, RF-35, RF-62, RF-69 |
 | `login/` ✅ | Email y clave, GitHub y Google, como el `Login` de clase. Vuelve a la ruta del `volver` | RF-02 |
 | `registro/` ✅ | Email y clave; después lleva a completar el perfil (sección 2.21) | RF-01 |
 | `recuperar-clave/`, `restablecer-clave/` ✅ | Pide el mail sin revelar si el email tiene cuenta, y elige la clave nueva con la sesión del enlace | RF-02 |
@@ -453,7 +458,7 @@ Todas existen.
 | `compra/paso-funcion/` ✅ | Chips de días y horarios | RF-34 |
 | `compra/paso-butacas/` ✅ | Mapa, contador y `butacasContiguas` | RF-26 a RF-31, RF-90 |
 | `compra/paso-candy/` ✅ | Combos destacados arriba y productos por categoría, con − y +. Un combo por entrada como máximo; sin nada elegido, el botón dice "Seguir sin candy" | RF-47, RF-49 |
-| `compra/paso-pago/` ✅ | Cupón (sugerido o tipeado), crédito (todo o una parte), declaración de edad y tarjeta. Si no queda nada por pagar, reemplaza la tarjeta por **Confirmar compra**. Los canjes llegan en F13 | RF-37, RF-43 a RF-45, RF-76 |
+| `compra/paso-pago/` ✅ | Cupón (sugerido o tipeado), crédito (todo o una parte), declaración de edad y tarjeta. Si no queda nada por pagar, reemplaza la tarjeta por **Confirmar compra**. Canje de puntos con contadores | RF-37, RF-43 a RF-45, RF-76 |
 | `compra/paso-comprobante/` ✅ | QR, código, PDF y guardado local | RF-51 a RF-54 |
 
 ### 4.6 `cliente/`, `empleado/` y `admin/`
@@ -462,10 +467,10 @@ Cada pantalla se carga con `loadComponent` y tiene el guard de su rol en `canMat
 
 | Componente | Qué hace | Req. |
 |---|---|---|
-| `cliente/perfil/` ✅ | Datos (fecha de nacimiento de solo lectura) y edad con el pipe. Cupones disponibles (F9) y crédito con sus movimientos (F10). Puntos y canjes llegan en F13 | RF-04, RF-66, RF-75 |
+| `cliente/perfil/` ✅ | Datos (fecha de nacimiento de solo lectura) y edad con el pipe. Cupones disponibles (F9) y crédito con sus movimientos (F10). Puntos disponibles y pendientes, movimientos y recompensas (F13) | RF-04, RF-66, RF-75 |
 | `cliente/completar-perfil/` ✅ | Datos del perfil para quien se registró con email o entró por OAuth; vuelve a la ruta del `volver` | RF-86 |
 | `cliente/mis-compras/`, `detalle-compra/` ✅ | Historial con el estado en un chip (`@switch`), QR, PDF y cancelación. El botón aparece solo si la compra está vigente, y si no se puede cancelar queda deshabilitado con el motivo | RF-05, RF-73 |
-| `cliente/mis-peliculas/` (F12) | Películas vistas con acceso a reseñar | RF-72 |
+| `cliente/mis-peliculas/` ✅ | Películas vistas con la reseña en línea (estrellas y comentario de hasta 280) | RF-61 a RF-63, RF-72 |
 | `cliente/notificaciones/` ✅ | Bandeja completa, "Marcar todos como leídos" y el botón **Activar avisos**, con el estado del permiso en un `@switch`. Desde F16, el mismo botón suscribe el dispositivo al push | RF-87 a RF-89 |
 | `empleado/validacion/` ✅ | Modo acceso o candy, escáner, ingreso manual y resultado arriba. El admin también la ve en su menú | RF-55 a RF-57 |
 | `empleado/escaner-qr/` ✅ | Cámara con `@zxing/browser`; emite el código leído. Necesita HTTPS: en el celular se prueba en Vercel | RF-55 |
@@ -476,7 +481,7 @@ Cada pantalla se carga con `loadComponent` y tiene el guard de su rol en `canMat
 | `admin/selector-generos/`, `selector-formatos/`, `selector-productos/` ✅ | Controles propios con `model()` (como el `PriorityPicker` de clase) para el formulario de película, de sala y de combo | RNF-03 |
 | `admin/precios-admin/` ✅ | Precio por formato, recargo VIP y porcentaje del cupón de primera compra | RF-39, RF-41 |
 | `admin/categorias-admin/`, `productos-admin/`, `combos-admin/` ✅ | Candy, con una botonera `.secciones` para pasar de una a otra. Borrar algo vendido falla por la FK y el mensaje sugiere marcarlo como no disponible | RF-46, RF-48 |
-| `admin/cupones-admin/` ✅, `recompensas-admin/` (F13) | Promociones. `BIENVENIDA` aparece aparte, con un enlace a Precios | RF-40, RF-42, RF-65 |
+| `admin/cupones-admin/` ✅, `recompensas-admin/` ✅ | Promociones. `BIENVENIDA` aparece aparte, con un enlace a Precios | RF-40, RF-42, RF-65 |
 | `admin/cuentas-admin/` ✅ | Crear empleados y admins sin cerrar la sesión propia; reintentar el rol si ese paso falla; lista del personal | RF-06 |
 | `admin/reportes/` ✅ | Atajos y rango de fechas; facturación por día en tres líneas (entradas, candy y combos) con descuentos, total y fila de totales; exportación a PDF y Excel; más vistas por semana o por mes y candy más vendido con `GraficoBarras` | RF-79 a RF-82, D-13 |
 | `admin/auditoria/` ✅ | Log con filtros opcionales por email, acción y rango; **Ver solo sus acciones** y "Ver datos" con los campos que cambiaron | RF-83 a RF-85 |
@@ -1058,3 +1063,1583 @@ Frase para el oral: "En Angular hice todo como en clase. Lo que no se vio vive e
 | `namedChunks` y `installMode: lazy` | RNF-06 | Desvío de la lámina 8·21 (sección 12.3) |
 | `qrcode`, `@zxing/browser`, `jspdf` y `write-excel-file` | RF-51, RF-53, RF-55 y RF-82 | QR, escáner, PDF y Excel; todas con `import()` solo cuando se usan |
 | `window.matchMedia` en `MenuPrincipal` | Pedido del 09/10 (barra) | API del navegador: en la computadora el grupo se abre con el mouse y en el celular no |
+
+---
+
+## 13. Árbol del proyecto, relaciones y trazabilidad
+
+La sección 4 explica archivo por archivo en tablas. Esta sección da el mapa entero: el árbol con todas las carpetas y archivos, qué función cumple cada carpeta, cómo se comunican las piezas y cómo se llega desde un requerimiento del documento hasta el archivo que lo cumple. Está armada sobre el código del 10/10 (después de `d788b9b`).
+
+### 13.1 Los identificadores del documento
+
+El documento de requerimientos le pone un identificador a cada ítem para poder señalarlo en una corrección ("RN-08", "S-04"). Hay cuatro prefijos, más las decisiones que agrega el SPEC:
+
+| Prefijo | Qué es | Cuántos | Ejemplo | Cómo se explica |
+|---|---|---|---|---|
+| **RF** | Requerimiento funcional: **qué** hace el sistema, lo que ve o hace un usuario | 90 (RF-01 a RF-90) | RF-29: retención con contador | "Es una función que el sistema tiene que ofrecer" |
+| **RN** | Regla de negocio: una condición que **tiene que cumplirse siempre**, la pida quien la pida | 25 (RN-01 a RN-25) | RN-04: una butaca se vende una sola vez por función | "Si se rompe, el cine pierde plata o vende mal. Por eso la garantiza la base" |
+| **RNF** | Requerimiento no funcional: **cómo** está hecho (tecnología, calidad, seguridad, accesibilidad) | 28 (RNF-01 a RNF-28) | RNF-06: carga diferida y guards por rol | "No es una pantalla: es una propiedad de todo el sistema" |
+| **S** | Supuesto: la decisión que se tomó ante algo ambiguo o contradictorio en los mails del cliente | 24 (S-01 a S-24) | S-01: J y K con 14 lugares, 532 butacas | "El cliente no lo dejó claro; elegí esto y lo justifiqué" |
+| **D** | Decisión del SPEC: lo que se resolvió durante la implementación (no está en el documento) | D-01 a D-26 | D-25: push con la app cerrada | Están en la sección 13.1 del SPEC |
+
+La diferencia que más preguntan, **RF contra RN**: RF-73 dice que el cliente puede cancelar (una función); RN-18 dice bajo qué condiciones (hasta 2 h antes, nada usado, la compra completa). El RF se cumple con una pantalla; la RN se cumple en `cancelar_compra` aunque alguien llame a la API sin pasar por la pantalla.
+
+### 13.2 La matriz de trazabilidad
+
+**Qué es:** una tabla que une cada requerimiento con el lugar donde se cumple, para poder demostrar que nada quedó sin hacer y que nada se hizo sin motivo. El documento trae una **matriz de trazabilidad técnica** (al final de los requerimientos no funcionales, antes de la sección 7 de supuestos) que une cada concepto técnico de la materia con los requerimientos donde se aplica.
+
+**Cómo se encadena en este proyecto:**
+
+```text
+Documento de requerimientos ──► SPEC.md, sección 12 ──► código (este árbol) ──► pruebas y README
+  RF, RN, RNF y S                 cada ID con su sección     archivo, función      rules/*.spec.ts
+  matriz técnica                  de diseño y su fase        de la base o           README: arquitectura
+                                  (F0 a F16)                 componente             y decisiones
+```
+
+- **Hacia adelante** (del requerimiento al código): "¿dónde está RN-25?" → SPEC 12.2 → `butacas_contiguas` en la base y `validators/butacas-contiguas.ts` en Angular → `contiguidad.spec.ts`.
+- **Hacia atrás** (del código al requerimiento): "¿por qué existe `rules/cancelacion.ts`?" → RF-73 y RN-18, tabla 4.4 o las tablas de abajo.
+
+**La matriz técnica del documento, con los archivos reales:**
+
+| Concepto | Dónde lo pide el documento | Req. | Dónde está en el código |
+|---|---|---|---|
+| Componentes standalone | Toda la aplicación, con arranque por `bootstrapApplication` | RNF-01 | `src/main.ts` y `app.config.ts`. Ningún `NgModule`: cada componente declara sus `imports` |
+| Signals (`signal`, `computed`, `effect`) | Stores de cartelera, compra, butacas y sesión; resumen y precio calculados | RNF-02, RF-28, RF-36 | `shared/stores/*.ts`. `CompraStore.resumen` es un `computed`; `SesionStore` y `NotificacionesStore` usan `effect` para reaccionar al usuario que entra |
+| Signal inputs y outputs | Mapa de butacas, tarjeta de película y selector de fecha | RNF-03, RF-26, RF-34 | `MapaButacas` (`input.required` de butacas y `output` `alternada`), `TarjetaPelicula` (`input` de película y puesto), `SelectorFecha`; con `model()`, `SelectorGeneros`, `SelectorFormatos`, `SelectorProductos`, `Estrellas` y `VerClave` |
+| Control de flujo (`@if`, `@for`, `@switch`) | Estados de butacas, listados y resultado de validación | RNF-04, RF-27, RF-58 | Todas las `.html`. Los `@switch` más claros: el paso en `checkout.html`, el resultado en `resultado-validacion.html` y el estado de la compra en `mis-compras.html`. El menú por rol sale de `computed` sobre `SesionStore.rol()` y se dibuja con `@for` |
+| Signal Forms | Registro, ABM del admin, programación de funciones y checkout | RNF-05, RF-01, RF-21, RF-22 | `form()` en 23 archivos: login, registro, las dos de clave, 14 pantallas del admin, `PasoButacas`, `PasoPago`, `MisPeliculas`, `Validacion` y el componente `FormularioPerfil` |
+| Lazy loading | Rutas `/admin` y `/empleado` cargadas a demanda | RNF-06, RF-55, RF-77 | `app.routes.ts` con `loadComponent`; `ngsw-config.json` deja esas pantallas en `installMode: lazy` |
+| Guards funcionales | Acceso por rol a `/admin`, `/empleado` y la cuenta del cliente | RNF-06, RF-06 | `shared/guard/`: tres `CanMatchFn` por rol, `invitadoGuard`, `puedeComprarGuard`, `pendingChangesGuard` y `peliculaResolver` |
+| Pipes propios | `duracion`, `precioArs` y `edad` | RNF-26, RF-15, RF-36, RF-04 | `shared/pipes/`, con la lógica en `rules/formato.ts` y `rules/edad.ts` |
+| Directivas propias | `appHighlightButaca` y `appRestrictEdad` | RNF-27, RF-30, RF-35 | `shared/directives/` (más `appMascara`, que suma los separadores al escribir fechas, horas y tarjetas) |
+| Validadores propios | `butacasContiguas` | RNF-28, RF-90, RN-25 | `shared/validators/butacas-contiguas.ts`, con el motivo en `rules/contiguidad.ts` |
+| Servicios e inyección de dependencias | Acceso a datos separado y pago simulado intercambiable | RNF-07, S-08 | `shared/api/` (21 clases `@Injectable`), `shared/services/pago-service.ts` → RPC `confirmar_compra` → `simular_pago` |
+| Supabase Auth y OAuth | Email y contraseña, Google, GitHub y sesiones anónimas | RNF-09, RF-01, RF-02, RF-86 | `api/auth-api.ts`, `stores/sesion-store.ts`, `publico/login/`, `cliente/completar-perfil/`; la anónima la abre `ButacasStore` al tocar la primera butaca |
+| RLS | Todas las tablas; datos sensibles visibles solo para su titular | RNF-10, S-16 | `tp1-sistema-cine.sql` (RLS en sus 25 tablas, 48 políticas), `01_base.sql` y `03_push.sql`; `datos_sensibles` solo la lee su dueño, ni el admin |
+| Realtime | Mapa de butacas y bandeja de notificaciones | RNF-12, RF-28 | `OcupacionApi` + `ButacasStore` y `NotificacionApi` + `NotificacionesStore`; en la base, `ocupaciones` y `notificaciones` en la publicación `supabase_realtime` |
+| Storage | Pósters e imágenes de productos | RNF-13, RF-08, RF-46 | `api/imagen-api.ts` y los buckets `posters` y `productos` (solo el admin escribe) |
+| PWA y notificaciones push | Instalación, caché, alertas, recordatorios y aviso de validación | RNF-14 a RNF-16, RF-69, RF-87 a RF-89 | `manifest.webmanifest`, `ngsw-config.json`, `services/avisos-sistema.ts`, `api/push-api.ts`, `03_push.sql` y `supabase/functions/enviar-push/` |
+| Pruebas con Vitest | Reglas de precio, cupones, edad, puntos, asignación y contigüidad | RNF-23 | 21 archivos `.spec.ts`: 18 en `rules/` y 3 en `utils/` |
+
+### 13.3 El árbol completo
+
+Convención para no repetir: **cada carpeta de componente tiene exactamente tres archivos con su mismo nombre**, que el árbol marca como `[ts·html·css]`:
+
+- `nombre.ts`: la clase. Inyecta stores, Apis y servicios con `inject()`, declara los signals y los `computed`, arma el formulario y maneja los eventos.
+- `nombre.html`: la plantilla, con `@if`, `@for` y `@switch`.
+- `nombre.css`: estilos encapsulados de ese componente; los tokens de color vienen de `styles.css`.
+
+`(local)` marca lo que está en `.git/info/exclude` y no se sube; `(generado)` lo que crean `npm` o el CLI.
+
+```text
+tp1-sistema-cine/
+├── README.md ..................... lo que lee el docente: arquitectura, decisiones, cómo correr, base, usuarios y tarjetas de prueba (RNF-25)
+├── SPEC.md ....................... (local) diseño completo y plan por fases; su sección 12 es la trazabilidad
+├── DEFENSA.md .................... (local) esta guía
+├── package.json .................. dependencias (Angular 22, supabase-js, zxing, jspdf, qrcode, write-excel-file) y scripts start, build y test
+├── package-lock.json ............. versiones exactas; Vercel instala lo mismo que en la máquina local
+├── angular.json .................. build, presupuestos, fileReplacements de producción, namedChunks y serviceWorker (RNF-24, RNF-14)
+├── tsconfig.json ................. strict y strictTemplates (RNF-08)
+├── tsconfig.app.json ............. qué compila la app: todo src/ menos los .spec.ts
+├── tsconfig.spec.json ............ qué compilan las pruebas: solo los .spec.ts, con los tipos de Vitest (RNF-23)
+├── ngsw-config.json .............. qué guarda el service worker: inicial, diferido y recursos; datos cartelera e imagenes (RNF-15)
+├── .editorconfig · .prettierrc ... formato del código (sangría, comillas, ancho de línea), igual en todos los archivos
+├── .gitignore .................... lo que nunca se sube: node_modules, dist, la caché de .angular
+├── .vscode/ ...................... extensions.json, launch.json y tasks.json: los genera el CLI para correr y depurar en VS Code
+├── node_modules/ · dist/ · .angular/   (generado) dependencias instaladas, salida del build y caché del CLI
+│
+├── public/ ....................... se copia tal cual a la raíz del sitio publicado
+│   ├── favicon.ico
+│   ├── manifest.webmanifest ...... nombre, idioma, colores e íconos de la app instalada (RNF-14)
+│   └── icons/ .................... icon-72x72.png a icon-512x512.png (8 tamaños), any y maskable
+│
+├── supabase/ ..................... (local) lo que vive en Supabase; se pega a mano en el panel, sin CLI
+│   ├── sql/ ...................... se aplican en este orden en el SQL Editor; un script aplicado no se edita
+│   │   ├── 01_base.sql ........... configuracion (fila única) y precios_formato, con RLS de solo lectura (RF-39)
+│   │   ├── tp1-sistema-cine.sql .. el resto de la base: 25 tablas, 42 funciones, 15 triggers, 48 políticas,
+│   │   │                           5 vistas, buckets, Realtime y 3 jobs de pg_cron (RNF-10, RNF-11, todas las RN)
+│   │   ├── 02_permisos_anon.sql .. quita a anon las 19 RPC que necesitan sesión (RNF-10)
+│   │   ├── 03_push.sql ........... pg_net, suscripciones_push, sus 2 RPC y los triggers del push (RF-87 a RF-89, RNF-16)
+│   │   └── 04_quita_demo_avisos.sql  borra la demo de avisos y vuelve alertas-venta a 10 minutos (alcance)
+│   └── functions/
+│       └── enviar-push/
+│           └── index.ts .......... Edge Function: firma con VAPID y manda el push a cada dispositivo del usuario (D-25)
+│
+└── src/
+    ├── index.html ................ lang="es", título, manifest y theme-color (RNF-14, RNF-20)
+    ├── main.ts ................... bootstrapApplication(App, appConfig) y locale es-AR (RNF-01, RNF-21)
+    ├── styles.css ................ tokens de la identidad, foco visible, .solo-lectores y clases comunes (.panel, .boton, .chip, .campo) (RNF-17, RNF-20)
+    ├── environments/
+    │   ├── environment.ts ........ desarrollo: URL de Supabase, clave publicable y clave pública VAPID (RNF-24)
+    │   └── environment.prod.ts ... producción; lo pone fileReplacements en el build
+    │
+    └── app/
+        ├── app.ts · app.html · app.css   raíz: router-outlet, MenuPrincipal, bandeja, aviso de perfil incompleto y de versión nueva (RF-77, RNF-15)
+        ├── app.config.ts ......... providers globales: router con inputs desde la ruta, LOCALE_ID, zona -0300 y service worker
+        ├── app.routes.ts ......... las 37 rutas: loadComponent, guards en canMatch/canActivate/canDeactivate y resolver (RNF-06)
+        │
+        ├── shared/ ............... todo lo que se reutiliza; ninguna pantalla vive acá
+        │   ├── services/
+        │   │   ├── supabase.client.ts ...... el único cliente de Supabase de la app; solo lo importan las Apis
+        │   │   ├── pago-service.ts ......... la pasarela simulada en un solo lugar: llama a confirmar_compra con o sin tarjeta (S-08, RNF-07)
+        │   │   ├── comprobantes-locales.ts . los últimos 20 comprobantes en localStorage, para verlos sin conexión (RNF-15, S-04)
+        │   │   └── avisos-sistema.ts ....... permiso de avisos, aviso con la app abierta y suscripción al push con SwPush (RNF-16)
+        │   │
+        │   ├── api/ ............... una clase por dominio; hace la llamada a Supabase y devuelve datos, sin guardar estado
+        │   │   ├── auth-api.ts ............. registro, login, OAuth, sesión anónima, recuperación y salida (RF-01, RF-02, RNF-09)
+        │   │   ├── perfil-api.ts ........... perfil y tipo de sangre con consentimiento (RF-04, RF-86, S-16)
+        │   │   ├── cuenta-interna-api.ts ... segundo cliente sin sesión + RPC asignar_rol (RF-06)
+        │   │   ├── configuracion-api.ts .... parámetros del negocio y precios por formato (RF-39)
+        │   │   ├── pelicula-api.ts ......... cartelera, top 3, ficha y ABM de películas (RF-08 a RF-15)
+        │   │   ├── genero-api.ts ........... ABM de géneros (RF-09)
+        │   │   ├── imagen-api.ts ........... sube pósters e imágenes del candy a Storage (RNF-13)
+        │   │   ├── sala-api.ts ............. salas y butacas (RF-16 a RF-20)
+        │   │   ├── funcion-api.ts .......... funciones, programar_funciones y modificar_funcion (RF-21 a RF-25)
+        │   │   ├── ocupacion-api.ts ........ retener y liberar butacas, y el canal Realtime del mapa (RF-26 a RF-29)
+        │   │   ├── compra-api.ts ........... confirmar, historial, comprobante y cancelar (RF-05, RF-37, RF-73)
+        │   │   ├── candy-api.ts ............ categorías, productos y combos (RF-46 a RF-50)
+        │   │   ├── cupon-api.ts ............ ABM, sugeridos y validación por RPC (RF-40 a RF-43)
+        │   │   ├── fidelizacion-api.ts ..... crédito, puntos y recompensas (RF-44, RF-64 a RF-66, RF-75)
+        │   │   ├── validacion-api.ts ....... RPC validar_qr (RF-55 a RF-59)
+        │   │   ├── resena-api.ts ........... reseñas y Mis películas (RF-61 a RF-63, RF-72)
+        │   │   ├── alerta-api.ts ........... alertas de Próximamente (RF-69)
+        │   │   ├── notificacion-api.ts ..... bandeja y su canal Realtime (RF-87 a RF-89)
+        │   │   ├── push-api.ts ............. guardar y borrar la suscripción push del dispositivo (RNF-16)
+        │   │   ├── reporte-api.ts .......... las tres RPC de reportes (RF-79 a RF-81)
+        │   │   └── auditoria-api.ts ........ el log, con filtros (RF-83, RF-85)
+        │   │
+        │   ├── stores/ ............ estado compartido como signals, en root; lo leen varias pantallas (RNF-02)
+        │   │   ├── sesion-store.ts ......... sesión, perfil, rol, edad y listo() para los guards
+        │   │   ├── cartelera-store.ts ...... películas, top y filtros con computed (RF-13, RF-14)
+        │   │   ├── butacas-store.ts ........ mapa, selección, contador y Realtime; reiniciar() (RF-26 a RF-31)
+        │   │   ├── compra-store.ts ......... paso, candy, cupón, crédito, canjes y resumen; reiniciar() (RF-32, RF-36)
+        │   │   ├── notificaciones-store.ts . bandeja con Realtime y noLeidas (RF-89, RNF-12)
+        │   │   └── alertas-store.ts ........ películas con alerta del cliente, una consulta por sesión (RF-69)
+        │   │
+        │   ├── rules/ ............. funciones puras: sin Angular ni red; repiten las reglas de la base para anticipar (RNF-23)
+        │   │   ├── fechas.ts · .spec ....... hora de Buenos Aires, dd/mm/aaaa, chips de días, desfase del reloj (RNF-21)
+        │   │   ├── formato.ts · .spec ...... duración, precio, cuenta regresiva y código ABCD-EFGH-JK (RNF-26)
+        │   │   ├── edad.ts · .spec ......... edad, edad mínima, motivo y leyenda (RF-07, RN-06)
+        │   │   ├── perfil.ts · .spec ....... perfil completo, borrador y fecha de nacimiento (RF-01, RF-86)
+        │   │   ├── pelicula.ts · .spec ..... borrador, filtro de la cartelera y apertura de la preventa (RF-08, RF-14, RF-70)
+        │   │   ├── sala.ts · .spec ......... etiqueta de sala y butacas por bloque (RF-16, RF-20)
+        │   │   ├── asignacion.ts · .spec ... vista previa de la sala de cada fecha (RF-24, RN-01, RN-03)
+        │   │   ├── contiguidad.ts · .spec .. motivo de butacas no contiguas (RN-25)
+        │   │   ├── precio.ts · .spec ....... entrada, preventa, combos y canjes (RN-07, RN-08, RN-13, RN-15)
+        │   │   ├── candy.ts · .spec ........ agrupar, detalle del combo y cantidades (RF-46 a RF-49)
+        │   │   ├── cupones.ts · .spec ...... estado, motivo de rechazo y mejor cupón (RN-09 a RN-11)
+        │   │   ├── tarjeta.ts · .spec ...... Luhn, vencimiento y CVV (S-08)
+        │   │   ├── cancelacion.ts · .spec .. plazo y motivo de no cancelable (RF-73, RN-18)
+        │   │   ├── puntos.ts · .spec ....... puntos ganados, disponibles y pendientes (RF-64, RN-12, RN-19)
+        │   │   ├── resena.ts · .spec ....... promedio, cantidad y estrellas (RF-62)
+        │   │   ├── reportes.ts · .spec ..... rango, atajos y totales (RF-79 a RF-82)
+        │   │   ├── auditoria.ts · .spec .... campos que cambiaron y quién actuó (RF-83, RF-85)
+        │   │   └── mascara.ts · .spec ...... separadores de fecha, hora, tarjeta y vencimiento mientras se escribe (RNF-19)
+        │   │
+        │   ├── models/ ............ interfaces y tipos por entidad, con los nombres de columna de la base (RNF-08)
+        │   │   ├── auth · perfil · menu ............................. usuarios, roles y grupos de la barra
+        │   │   ├── pelicula · sala · butaca · funcion · configuracion  catálogo, salas y programación
+        │   │   ├── compra · pago · candy · cupon · fidelizacion ...... venta, promociones, crédito y puntos
+        │   │   ├── validacion · notificacion · resena ................ QR, avisos y comunidad
+        │   │   └── reporte · auditoria ............................... panel del admin
+        │   │                            (18 archivos *.model.ts)
+        │   ├── guard/ ............. quién entra a cada ruta (RNF-06)
+        │   │   ├── cliente-guard.ts · empleado-guard.ts · admin-guard.ts   CanMatchFn por rol; sin sesión, al login con volver
+        │   │   ├── invitado-guard.ts ....... quien ya entró no vuelve al login (RF-02)
+        │   │   ├── puede-comprar-guard.ts .. visitante o cliente con perfil completo (RF-86)
+        │   │   ├── pending-changes-guard.ts  pregunta antes de salir con cambios o butacas retenidas
+        │   │   └── pelicula-resolver.ts .... la ficha nace con su película (RF-15)
+        │   ├── pipes/ ............. duracion-pipe.ts · precio-ars-pipe.ts · edad-pipe.ts (RNF-26)
+        │   ├── directives/ ........ highlight-butaca.ts · restrict-edad.ts (RNF-27) · mascara-entrada.ts (RNF-19)
+        │   ├── validators/ ........ butacas-contiguas.ts (RNF-28, RF-90)
+        │   ├── utils/ ............. ayudas que no son reglas del negocio
+        │   │   ├── errores.ts · .spec ...... traduce los errores de Supabase y de la base a mensajes
+        │   │   ├── rutas.ts · .spec ........ rutaSegura: el volver solo puede ser una ruta interna
+        │   │   ├── archivos.ts · .spec ..... nombre seguro y validación de imágenes (RNF-13)
+        │   │   ├── qr.ts ................... genera el QR sin red (RF-53)
+        │   │   ├── comprobante-pdf.ts ...... PDF del comprobante (RF-51, RF-52)
+        │   │   └── reporte-pdf.ts · excel.ts  exportación del reporte (RF-82)
+        │   └── components/ ........ piezas visuales reutilizables, todas [ts·html·css] (RNF-03)
+        │       ├── menu-principal/ ......... barra por rol, con grupos y panel lateral en el celular (RF-77, RNF-19)
+        │       ├── bandeja-notificaciones/ . campana con los avisos (RF-89)
+        │       ├── tarjeta-pelicula/ ....... póster, datos y promedio de una película
+        │       ├── boton-alerta/ ........... "Avisame cuando salga a la venta" (RF-69)
+        │       ├── estrellas/ .............. calificación de 1 a 5, editable o de solo lectura (RF-61)
+        │       ├── mapa-butacas/ ........... el mapa por bloques y pasillos (RF-26, RF-30)
+        │       ├── contador-retencion/ ..... cuenta regresiva de los 10 minutos (RF-29)
+        │       ├── indicador-pasos/ ........ en qué paso de la compra está (RF-32)
+        │       ├── resumen-compra/ ......... desglose de la compra (RF-36)
+        │       ├── vista-comprobante/ ...... QR, código, detalle y PDF (RF-51 a RF-54)
+        │       ├── selector-fecha/ ......... chips de días, sin calendario con scroll (RF-34, RF-78)
+        │       ├── selector-horario/ ....... chips de horarios (RF-34)
+        │       ├── selector-dias/ .......... días de la semana para programar (RF-22)
+        │       ├── selector-hora/ .......... hora HH:MM (RF-22)
+        │       ├── formulario-perfil/ ...... datos personales, compartido por Perfil y Completar perfil (RF-04, RF-86)
+        │       ├── grafico-barras/ ......... barras con su tabla para lectores de pantalla (RF-80, RF-81)
+        │       └── ver-clave/ .............. botón para mostrar u ocultar la clave
+        │
+        ├── publico/ .............. pantallas sin guard de rol: visitante, anónimo o cliente
+        │   ├── inicio/ [ts·html·css] ............ top 3 y cartelera con buscador y filtros (RF-13, RF-14)
+        │   ├── proximamente/ [ts·html·css] ...... próximos estrenos con BotonAlerta (RF-68, RF-69)
+        │   ├── pelicula-detalle/ [ts·html·css] .. ficha, funciones de un día por vez, precios, reseñas y Comprar (RF-15, RF-35, RF-62)
+        │   ├── login/ [ts·html·css] ............. email y clave, GitHub, Google y acceso para la corrección (RF-02)
+        │   ├── registro/ [ts·html·css] .......... alta con email y clave (RF-01)
+        │   ├── recuperar-clave/ [ts·html·css] ... pide el mail de recuperación (RF-02)
+        │   ├── restablecer-clave/ [ts·html·css] . elige la clave nueva con la sesión del enlace (RF-02)
+        │   ├── privacidad/ [ts·html·css] ........ política de datos, Ley 25.326 (RNF-22)
+        │   ├── comprobantes/ [ts·html·css] ...... comprobantes guardados en el dispositivo, sin conexión (RNF-15)
+        │   └── compra/ ........................... el checkout: un contenedor y un componente por paso
+        │       ├── checkout/ [ts·html·css] ...... @switch sobre el paso, IndicadorPasos y ContadorRetencion (RF-32)
+        │       ├── paso-funcion/ [ts·html·css] .. día y horario; Comprar con *appRestrictEdad (RF-34, RF-35)
+        │       ├── paso-butacas/ [ts·html·css] .. mapa en tiempo real y butacasContiguas (RF-26 a RF-31, RF-90)
+        │       ├── paso-candy/ [ts·html·css] .... combos destacados y productos por categoría (RF-47, RF-49)
+        │       ├── paso-pago/ [ts·html·css] ..... cupón, crédito, canjes, edad declarada y tarjeta (RF-37, RF-43 a RF-45)
+        │       └── paso-comprobante/ [ts·html·css]  QR, código, PDF y guardado local (RF-51 a RF-54)
+        │
+        ├── cliente/ .............. con clienteGuard en canMatch
+        │   ├── perfil/ [ts·html·css] ............ datos, edad, cupones, crédito y puntos (RF-04, RF-66, RF-75)
+        │   ├── completar-perfil/ [ts·html·css] .. datos que faltan después del registro o de OAuth (RF-86)
+        │   ├── mis-compras/ [ts·html·css] ....... historial con el estado en un chip (RF-05)
+        │   ├── detalle-compra/ [ts·html·css] .... comprobante, PDF y cancelación (RF-05, RF-73)
+        │   ├── mis-peliculas/ [ts·html·css] ..... películas vistas y su reseña (RF-61 a RF-63, RF-72)
+        │   └── notificaciones/ [ts·html·css] .... bandeja completa y Activar avisos (RF-87 a RF-89)
+        │
+        ├── empleado/ ............. con empleadoGuard (empleado y admin)
+        │   ├── validacion/ [ts·html·css] ........ modo acceso o candy, escáner o código manual (RF-55 a RF-57)
+        │   ├── escaner-qr/ [ts·html·css] ........ cámara con @zxing/browser; emite el código leído (RF-55)
+        │   └── resultado-validacion/ [ts·html·css]  resultado grande con @switch (RF-58, RF-59)
+        │
+        └── admin/ ................ con adminGuard
+            ├── peliculas-admin/ [ts·html·css] ... listado del catálogo (RF-08, RF-11)
+            ├── pelicula-form/ [ts·html·css] ..... alta y edición, póster y preventa (RF-08 a RF-11, RF-70)
+            ├── selector-generos/ [ts·html·css] .. control con model() para el formulario de película (RF-09)
+            ├── generos-admin/ [ts·html·css] ..... ABM de géneros (RF-09)
+            ├── salas-admin/ [ts·html·css] ....... ABM de salas (RF-16)
+            ├── selector-formatos/ [ts·html·css] . control con model() para los formatos de la sala (S-03)
+            ├── sala-butacas/ [ts·html·css] ...... tipo de butaca y fuera de servicio (RF-20)
+            ├── funciones-admin/ [ts·html·css] ... listado de funciones (RF-21)
+            ├── funcion-form/ [ts·html·css] ...... editar horario, formato o idioma (RF-21, RF-25)
+            ├── programar-funciones/ [ts·html·css]  programación recurrente con vista previa (RF-22 a RF-24, RF-78)
+            ├── precios-admin/ [ts·html·css] ..... precio por formato, recargo VIP y cupón de primera compra (RF-39, RF-41)
+            ├── categorias-admin/ [ts·html·css] .. categorías del candy (RF-46)
+            ├── productos-admin/ [ts·html·css] ... productos con imagen (RF-46)
+            ├── combos-admin/ [ts·html·css] ...... combos y destacados (RF-48, RF-49)
+            ├── selector-productos/ [ts·html·css]  control con model() para los productos del combo (RF-48)
+            ├── cupones-admin/ [ts·html·css] ..... cupones generales y por edad (RF-40, RF-42)
+            ├── recompensas-admin/ [ts·html·css] . catálogo de recompensas en puntos (RF-65)
+            ├── cuentas-admin/ [ts·html·css] ..... alta de empleados y admins (RF-06)
+            ├── reportes/ [ts·html·css] .......... facturación, más vistas, candy, PDF y Excel (RF-79 a RF-82)
+            └── auditoria/ [ts·html·css] ......... log con filtros (RF-83 a RF-85)
+```
+
+En números: 62 componentes (9 públicos, 6 del checkout, 6 de cliente, 3 de empleado, 20 de admin, 17 compartidos y la raíz), 21 Apis, 6 stores, 4 servicios, 18 reglas puras, 18 modelos, 6 guards y 1 resolver, 3 pipes, 3 directivas, 1 validador y 37 rutas (contando la redirección de `/admin` y el comodín `**`).
+
+### 13.4 Qué función cumple cada carpeta
+
+| Carpeta | Capa | Qué tiene adentro | Quién la usa | Qué usa ella | Regla que no se rompe |
+|---|---|---|---|---|---|
+| `publico/`, `cliente/`, `empleado/`, `admin/` | Presentación (pantallas) | Un componente por ruta, agrupados por quién los ve | El router (`app.routes.ts`) | `components/`, `pipes/`, `directives/`, `stores/` y `api/` | No importan `supabase.client.ts` |
+| `shared/components/` | Presentación (piezas) | Componentes sin ruta, con `input`, `output` y `model` | Las pantallas | `pipes/`, `directives/`, `rules/`; `MenuPrincipal`, `BotonAlerta` y `BandejaNotificaciones` leen un store | Reciben datos y avisan eventos; casi ninguno sabe de dónde vienen los datos |
+| `shared/stores/` | Estado | Signals y `computed` compartidos entre pantallas | Pantallas, guards, directivas y componentes | `api/`, `rules/`, `services/` | No saben de HTML |
+| `shared/api/` | Acceso a datos | Una clase por dominio con las llamadas a tablas, vistas, RPC, Storage y Realtime | Stores y pantallas de ABM | `services/supabase.client.ts` | No guardan estado: llaman, lanzan el error y devuelven datos |
+| `shared/services/` | Servicios transversales | El cliente de Supabase, el pago, los comprobantes locales y los avisos | Apis, stores y la raíz | El navegador (`localStorage`, `Notification`, `SwPush`) | Cada uno resuelve una sola cosa del sistema |
+| `shared/rules/` | Lógica pura | Funciones que reciben datos y devuelven datos | Stores, pipes, validador, directivas y componentes | Solo `models/` y otras reglas | No importan Angular; por eso se prueban con Vitest |
+| `shared/models/` | Tipos | Interfaces, uniones de literales, etiquetas y borradores de formulario | Todos | Nada | Los nombres son los de las columnas de la base |
+| `shared/guard/` | Navegación | Guards funcionales y el resolver | `app.routes.ts` | `SesionStore` y `PeliculaApi` | Esperan `listo()` antes de decidir por rol |
+| `shared/pipes/`, `directives/`, `validators/` | Presentación (lo que pidió la cátedra) | Los tres pipes, las tres directivas y el validador | Plantillas y formularios | `rules/` | La lógica vive en `rules/`, ellos solo la conectan con Angular |
+| `shared/utils/` | Ayudas | Errores, rutas, archivos, QR, PDF y Excel | Pantallas y stores | Librerías externas con `import()` | No son reglas del negocio |
+| `src/environments/` | Configuración | URL y claves públicas | `supabase.client.ts` y `AvisosSistema` | — | Nunca una clave secreta |
+| `public/` | Recursos estáticos | Manifest e íconos | El navegador al instalar | — | — |
+| `supabase/sql/` | Base de datos | Tablas, RLS, RPC, triggers, vistas y jobs | Las Apis, a través de PostgREST | — | Lo crítico se garantiza acá (RNF-11) |
+| `supabase/functions/` | Servidor | `enviar-push` | El trigger `notificaciones_push` por pg_net | `web-push` y los secretos VAPID | Solo envía; no decide a quién (eso lo hace la base) |
+
+### 13.5 Cómo se comunican
+
+**El camino de una acción, de la pantalla a la base y de vuelta:**
+
+```text
+ URL ──► app.routes.ts ──► guard (canMatch / canActivate) ──► resolver ──► Pantalla
+                                   │ lee SesionStore.listo()                 │
+                                                                             │ plantilla: components/, pipes/, directives/
+                                                                             │ inject(): stores/ o api/
+                                                                             ▼
+          rules/ ◄──usa── stores/ ──llama──► api/ ──► services/supabase.client.ts
+       (funciones puras)                                      │
+                                                              ▼
+                                        ┌──────────────── Supabase ────────────────┐
+                                        │ Auth ........ sesión, OAuth y anónima     │
+                                        │ PostgREST ... tablas y vistas con RLS     │
+                                        │ RPC ......... confirmar_compra, validar_qr│
+                                        │ Realtime .... ocupaciones, notificaciones │
+                                        │ Storage ..... posters, productos          │
+                                        └───────────────────────────────────────────┘
+                                                              │
+               signal actualizado ◄── store ◄── respuesta o evento Realtime
+                         │
+                         ▼
+               la plantilla se vuelve a dibujar sola
+```
+
+**Lo que pasa dentro de la base sin que nadie lo llame:**
+
+```text
+INSERT/UPDATE/DELETE ──► triggers ──► auditoria (auditar_*), perfil nuevo (auth_usuario_creado),
+                                      fin de la función (preparar_funcion), butacas de la sala nueva,
+                                      autor de la reseña, fecha de nacimiento fija
+pg_cron ─┬─ cada minuto ........ limpiar-retenciones: borra las butacas retenidas vencidas
+         ├─ cada 5 minutos ..... recordatorios: procesar_recordatorios (24 h y 2 h)
+         └─ cada 10 minutos .... alertas-venta: procesar_alertas
+INSERT en notificaciones ──► Realtime ──► NotificacionesStore ──► bandeja + aviso del sistema (app abierta)
+                         └─► trigger notificaciones_push ──► pg_net ──► Edge Function enviar-push
+                                 ──► servicio de push (FCM, Mozilla o Apple) ──► service worker ──► aviso (app cerrada)
+```
+
+**Qué usa cada pantalla** (sale de los `import` del código):
+
+| Pantalla | Componentes, directivas y pipes compartidos | Stores y servicios | Apis | Reglas |
+|---|---|---|---|---|
+| `app` (raíz) | `MenuPrincipal`, `BandejaNotificaciones` | `SesionStore`, `AvisosSistema` | `AuthApi` | — |
+| `inicio` | `TarjetaPelicula` | `CarteleraStore` | — | — |
+| `proximamente` | `TarjetaPelicula`, `BotonAlerta` | `CarteleraStore` | — | `fechas` |
+| `pelicula-detalle` | `SelectorFecha`, `BotonAlerta`, `Estrellas`, `*appRestrictEdad`, `duracion`, `precioArs` | `SesionStore` | `PeliculaApi`, `FuncionApi`, `ConfiguracionApi`, `ResenaApi` | `edad`, `fechas`, `resena` |
+| `login`, `registro`, `restablecer-clave` | `VerClave` | `SesionStore` | `AuthApi` | — (`login` usa `rutaSegura`) |
+| `checkout` | `IndicadorPasos`, `ContadorRetencion` y los cinco pasos | `ButacasStore`, `CompraStore` | — | `fechas`, `sala` |
+| `paso-funcion` | `SelectorFecha`, `SelectorHorario`, `*appRestrictEdad` | `CompraStore`, `SesionStore` | — | `edad`, `fechas` |
+| `paso-butacas` | `MapaButacas`, `butacasContiguas`, `precioArs` | `ButacasStore`, `CompraStore` | — | — |
+| `paso-candy` | `ResumenCompra`, `precioArs` | `ButacasStore`, `CompraStore` | — | `candy` |
+| `paso-pago` | `ResumenCompra`, `VerClave`, `appMascara`, `precioArs` | `ButacasStore`, `CompraStore`, `SesionStore` | — | `edad`, `formato`, `puntos`, `tarjeta` |
+| `paso-comprobante` | `VistaComprobante` | `CompraStore`, `SesionStore` | — | `formato` |
+| `comprobantes` | `VistaComprobante` | `ComprobantesLocales` | — | `fechas` |
+| `perfil` | `FormularioPerfil`, `edad`, `precioArs` | `SesionStore` | `PerfilApi`, `CuponApi`, `FidelizacionApi` | `perfil`, `puntos`, `fechas` |
+| `detalle-compra` | `VistaComprobante` | `ComprobantesLocales` | `CompraApi`, `ConfiguracionApi` | `cancelacion`, `formato` |
+| `mis-peliculas` | `Estrellas` | `SesionStore` | `ResenaApi` | `fechas` |
+| `notificaciones` | — | `NotificacionesStore`, `AvisosSistema` | — | `fechas` |
+| `validacion` | `EscanerQr`, `ResultadoValidacion` | — | `ValidacionApi` | `formato` |
+| `programar-funciones` | `SelectorDias`, `SelectorFecha`, `SelectorHora` | — | `FuncionApi`, `PeliculaApi`, `SalaApi`, `ConfiguracionApi` | `asignacion`, `fechas`, `sala` |
+| `pelicula-form` | `SelectorGeneros`, `appMascara` | — | `PeliculaApi`, `GeneroApi`, `ImagenApi` | `pelicula`, `fechas` |
+| `reportes` | `GraficoBarras`, `appMascara`, `precioArs` | — | `ReporteApi` | `reportes`, `fechas` |
+| Resto del admin | Su selector cuando lo tiene (`SelectorFormatos`, `SelectorProductos`) | — | La Api de su dominio | La regla de su dominio |
+
+**Por qué el admin llama directo a la Api y el checkout pasa por un store:** el estado del checkout lo comparten seis componentes (contenedor y cinco pasos) y el mapa recibe cambios por Realtime, así que vive en `CompraStore` y `ButacasStore`. Un ABM del admin es una sola pantalla que carga, edita y guarda; un store no agregaría nada (igual que `TaskApi` en clase).
+
+**Cómo se hablan los componentes entre sí:**
+
+| Mecanismo | Ejemplo |
+|---|---|
+| `input` (padre → hijo) | `MapaButacas` recibe `butacas`; `TarjetaPelicula`, la `pelicula` y su `puesto` en el top; `VistaComprobante`, el `comprobante` |
+| `output` (hijo → padre) | `MapaButacas` emite `alternada` con la butaca tocada; `EscanerQr` emite el código leído a `Validacion`; `MenuPrincipal` emite `salir` a la raíz |
+| `model()` (ida y vuelta) | `SelectorGeneros`, `SelectorFormatos`, `SelectorProductos`, `Estrellas` y `VerClave` funcionan como un campo de formulario |
+| Store compartido | Los cinco pasos del checkout no reciben `input`: leen y escriben `CompraStore` y `ButacasStore`; `BotonAlerta` de Próximamente y de la ficha comparten `AlertasStore` |
+| Router | Parámetros (`:peliculaId`) que llegan como `input` por `withComponentInputBinding`, `volver` en la URL después del login, y el resolver de la ficha |
+| La base | Dos pantallas en dos dispositivos se enteran de lo mismo por Realtime (el mapa, la bandeja) |
+
+### 13.6 Trazabilidad: de cada requerimiento al archivo
+
+#### Requerimientos funcionales, por módulo
+
+| Módulo | RF | Pantallas | `shared/` | Base |
+|---|---|---|---|---|
+| Cuentas y acceso | RF-01, RF-02, RF-04, RF-06, RF-07, RF-86 | `login`, `registro`, `recuperar-clave`, `restablecer-clave`, `perfil`, `completar-perfil`, `cuentas-admin` | `auth-api`, `perfil-api`, `cuenta-interna-api`, `sesion-store`, `formulario-perfil`, `ver-clave`, pipe `edad`, `rules/edad`, `rules/perfil`, `utils/rutas`, los guards | `perfiles`, `datos_sensibles`, `crear_perfil`, `proteger_fecha_nacimiento`, `asignar_rol` |
+| Catálogo y cartelera | RF-08 a RF-15, RF-68 | `inicio`, `proximamente`, `pelicula-detalle`, `peliculas-admin`, `pelicula-form`, `generos-admin`, `selector-generos` | `pelicula-api`, `genero-api`, `imagen-api`, `cartelera-store`, `tarjeta-pelicula`, pipe `duracion`, `rules/pelicula`, `peliculaResolver` | `peliculas`, `generos`, `peliculas_generos`, vista `peliculas_cartelera`, `top_peliculas`, bucket `posters` |
+| Salas, precios y funciones | RF-12, RF-16 a RF-25, RF-39, RF-78 | `salas-admin`, `sala-butacas`, `selector-formatos`, `funciones-admin`, `funcion-form`, `programar-funciones`, `precios-admin` | `sala-api`, `funcion-api`, `configuracion-api`, `selector-dias`, `selector-fecha`, `selector-hora`, `rules/asignacion`, `rules/sala`, `rules/fechas` | `plantilla_butacas`, `salas`, `butacas`, `funciones` con exclusión, `crear_butacas_sala`, `preparar_funcion`, `proteger_funcion_vendida`, `asignar_sala`, `programar_funciones`, `modificar_funcion` |
+| Mapa de butacas | RF-26 a RF-31, RF-38, RF-90 | `paso-butacas` | `ocupacion-api`, `butacas-store`, `mapa-butacas`, `contador-retencion`, `appHighlightButaca`, `butacasContiguas`, `rules/contiguidad`, `rules/precio` | `ocupaciones` (PK), `retener_butacas`, `liberar_butacas`, Realtime, job `limpiar-retenciones` |
+| Compra, pago y comprobante | RF-05, RF-32 a RF-37, RF-51 a RF-54 | `checkout`, `paso-funcion`, `paso-pago`, `paso-comprobante`, `comprobantes`, `mis-compras`, `detalle-compra` | `compra-store`, `compra-api`, `pago-service`, `comprobantes-locales`, `indicador-pasos`, `resumen-compra`, `vista-comprobante`, `selector-fecha`, `selector-horario`, `*appRestrictEdad`, `appMascara`, `rules/tarjeta`, `rules/precio`, `utils/qr`, `utils/comprobante-pdf` | `confirmar_compra`, `simular_pago`, `validar_venta`, `generar_codigo`, `comprobante`, vista `mis_compras` |
+| Candy | RF-46 a RF-50 | `paso-candy`, `categorias-admin`, `productos-admin`, `combos-admin`, `selector-productos` | `candy-api`, `rules/candy` | `categorias`, `productos`, `combos`, `combos_productos`, `compras_items`, bucket `productos` |
+| Cupones | RF-03, RF-40 a RF-43 | `paso-pago`, `cupones-admin`, `precios-admin`, `perfil` | `cupon-api`, `rules/cupones` | `cupones` (`BIENVENIDA`), `motivo_cupon`, `cupones_sugeridos`, `validar_cupon` |
+| Cancelación y crédito | RF-44, RF-73 a RF-76 | `detalle-compra`, `paso-pago`, `perfil` | `compra-api` (`cancelar`), `fidelizacion-api`, `rules/cancelacion` | `cancelar_compra`, `creditos_movimientos`, vista `saldos_credito` |
+| Puntos y recompensas | RF-45, RF-64 a RF-67 | `perfil`, `paso-pago`, `recompensas-admin` | `fidelizacion-api`, `compra-store` (canjes), `rules/puntos`, `rules/precio` | `puntos_movimientos`, `recompensas`, vista `saldos_puntos` |
+| Validación de QR | RF-55 a RF-60 | `validacion`, `escaner-qr`, `resultado-validacion` | `validacion-api`, `rules/formato` | `validar_qr`, `auditoria` |
+| Reseñas y Mis películas | RF-15, RF-61 a RF-63, RF-72 | `mis-peliculas`, `pelicula-detalle` | `resena-api`, `estrellas`, `tarjeta-pelicula`, `rules/resena` | `resenas`, `vio_pelicula`, vista `mis_peliculas`, `completar_autor_resena` |
+| Preventa y alertas | RF-68 a RF-71 | `proximamente`, `pelicula-detalle`, `pelicula-form` | `alerta-api`, `alertas-store`, `boton-alerta`, `rules/precio` (`enPreventa`), `rules/pelicula` (`aperturaPreventa`) | `alertas`, `en_preventa`, `precio_entrada`, `procesar_alertas` (job `alertas-venta`) |
+| Avisos | RF-87 a RF-89 | `notificaciones`, la raíz | `notificacion-api`, `notificaciones-store`, `bandeja-notificaciones`, `avisos-sistema`, `push-api` | `notificaciones`, `procesar_recordatorios` (job `recordatorios`), `validar_qr`, `suscripciones_push`, triggers `notificaciones_push` y `notificaciones_validacion`, `enviar-push` |
+| Panel, reportes y auditoría | RF-77, RF-79 a RF-85 | `menu-principal` (con `menu.model.ts`), `reportes`, `auditoria` | `reporte-api`, `auditoria-api`, `grafico-barras`, `rules/reportes`, `rules/auditoria`, `utils/reporte-pdf`, `utils/excel` | `reporte_facturacion`, `reporte_mas_vistas`, `reporte_productos`, `auditoria`, `auditar_cambio` y los nueve triggers `auditar_*` |
+
+#### Reglas de negocio: dónde se garantizan y dónde se anticipan
+
+La columna "Base" es la que manda; "Angular" solo avisa antes para que la persona no llegue a un error (sección 2.1).
+
+| RN | Regla | Base (garantiza) | Angular (anticipa) | Prueba |
+|---|---|---|---|---|
+| RN-01 | 30 min de limpieza | `preparar_funcion`, `asignar_sala` | `rules/asignacion.ts` (`ocupacionHasta`) | `asignacion.spec.ts` |
+| RN-02 | Sin funciones solapadas | Restricción de exclusión `funciones_sin_solapamiento` | — | — |
+| RN-03 | Sala de menor número | `asignar_sala` | `asignarSalas` en la vista previa de `programar-funciones` | `asignacion.spec.ts` |
+| RN-04 | Butaca única por función | Clave primaria `(funcion_id, butaca_id)` de `ocupaciones` | Estados del mapa en `ButacasStore` | — |
+| RN-05 | Retención de 10 min | `retener_butacas` y el job `limpiar-retenciones` | `ContadorRetencion` | `formato.spec.ts` (cuenta regresiva) |
+| RN-06 | Edad según clasificación | `validar_venta`, `confirmar_compra`, `proteger_fecha_nacimiento` | `*appRestrictEdad`, `rules/edad.ts`, declaración del anónimo en `paso-pago` | `edad.spec.ts` |
+| RN-07 | Precio de la entrada | `precio_entrada` | `precioEntrada` en `rules/precio.ts` | `precio.spec.ts` |
+| RN-08 | Ventana de preventa | `en_preventa` | `enPreventa` | `precio.spec.ts` |
+| RN-09, RN-10 | Cupón de primera compra y por edad | `motivo_cupon` | `motivoRechazoCupon` en `rules/cupones.ts` | `cupones.spec.ts` |
+| RN-11 | Un cupón; sugerir el mejor | `confirmar_compra`, `cupones_sugeridos` | `mejorCupon` | `cupones.spec.ts` |
+| RN-12 | Orden del cálculo y puntos | `confirmar_compra` | `CompraStore.resumen`, `puntosGanados` | `precio.spec.ts`, `puntos.spec.ts` |
+| RN-13 | Canje sin sumar puntos | `confirmar_compra` | Canjes en `CompraStore`, `entradasConCombos` | `precio.spec.ts` |
+| RN-14 | Candy solo con entrada | `confirmar_compra` | El paso de candy va después del de butacas | — |
+| RN-15 | Combo con una 2D estándar | `confirmar_compra` | `diferenciaCombo` | `precio.spec.ts` |
+| RN-16, RN-17 | QR con dos partes y ventanas de validación | `validar_qr` | `ResultadoValidacion` | — |
+| RN-18 | Condiciones de la cancelación | `cancelar_compra` | `motivoNoCancelable` en `rules/cancelacion.ts` | `cancelacion.spec.ts` |
+| RN-19 | Puntos pendientes hasta la función | `puntos_movimientos.disponible_desde` | `saldoPuntos` | `puntos.spec.ts` |
+| RN-20 | Top 3 | `top_peliculas` | `CarteleraStore` | — |
+| RN-21, RN-22 | Reseña solo de quien la vio; Mis películas | RLS de `resenas` con `vio_pelicula`, vista `mis_peliculas` | El botón de reseñar vive solo en `mis-peliculas` | — |
+| RN-23 | Facturación y más vistas | `reporte_facturacion`, `reporte_mas_vistas` | Totales en `rules/reportes.ts` | `reportes.spec.ts` |
+| RN-24 | Auditoría desde la base | `auditar_cambio`, los triggers `auditar_*` y las RPC | `rules/auditoria.ts` solo la muestra | `auditoria.spec.ts` |
+| RN-25 | Butacas contiguas | `butacas_contiguas` dentro de `confirmar_compra` | `butacasContiguas` y `rules/contiguidad.ts` | `contiguidad.spec.ts` |
+
+#### Requerimientos no funcionales
+
+| RNF | Qué pide | Dónde se cumple |
+|---|---|---|
+| RNF-01 | Angular 22 standalone | `main.ts`, `app.config.ts`; ningún `NgModule` |
+| RNF-02 | Signals en stores | `shared/stores/` |
+| RNF-03 | Componentes reutilizables | `shared/components/` y los tres `selector-*` del admin |
+| RNF-04 | `@if`, `@for` y `@switch` | Todas las `.html`; no hay `*ngIf` ni `*ngFor` |
+| RNF-05 | Signal Forms | Los 23 archivos con `form()` (sección 13.2) |
+| RNF-06 | Carga diferida y guards por rol | `app.routes.ts`, `shared/guard/`, `ngsw-config.json` |
+| RNF-07 | Capas separadas | `api/` → `stores/` → pantallas, con `rules/` aparte (sección 3) |
+| RNF-08 | Tipado estricto | `tsconfig.json` y `shared/models/` |
+| RNF-09 | Auth con email, Google, GitHub y anónima | `auth-api.ts`, `sesion-store.ts`, `butacas-store.ts` |
+| RNF-10 | RLS y nada de `service_role` en el front | RLS en las 28 tablas, `02_permisos_anon.sql`, `environment*.ts` con la clave publicable, `cuenta-interna-api.ts` |
+| RNF-11 | Reglas críticas en la base | RPC y triggers de `tp1-sistema-cine.sql` (tabla de RN de arriba) |
+| RNF-12 | Realtime | `ocupacion-api` + `butacas-store`, `notificacion-api` + `notificaciones-store` |
+| RNF-13 | Storage, solo el admin escribe | `imagen-api.ts`, `utils/archivos.ts`, políticas de los buckets con `es_admin()` |
+| RNF-14 | PWA instalable | `manifest.webmanifest`, `icons/`, `index.html`, `serviceWorker` en `angular.json` |
+| RNF-15 | Caché, offline y aviso de versión | `ngsw-config.json`, `comprobantes-locales.ts`, `publico/comprobantes/`, `SwUpdate` en `app.ts` |
+| RNF-16 | Push | `avisos-sistema.ts`, `push-api.ts`, `03_push.sql`, `enviar-push` |
+| RNF-17 | Diseño visual propio | Tokens de `styles.css` y el `.css` de cada componente |
+| RNF-18 | Responsive | `@media` en los `.css`; el panel lateral de `MenuPrincipal` |
+| RNF-19 | Navegación fácil, fechas sin scroll | `MenuPrincipal`, `IndicadorPasos`, los selectores de chips, `appMascara` |
+| RNF-20 | Accesibilidad AA | Foco visible y `.solo-lectores` en `styles.css`, `aria-*` de `appHighlightButaca`, la tabla oculta de `GraficoBarras`, contraste medido (sección 2.20) |
+| RNF-21 | Español, pesos y hora de Buenos Aires | `main.ts`, `app.config.ts`, `rules/fechas.ts`, pipe `precioArs` |
+| RNF-22 | Ley 25.326; tipo de sangre aparte | `privacidad/`, `datos_sensibles`, consentimiento en `FormularioPerfil` |
+| RNF-23 | Vitest | Los 21 `.spec.ts`, `tsconfig.spec.json` |
+| RNF-24 | Vercel y entornos | `environments/`, `fileReplacements` en `angular.json` |
+| RNF-25 | GitHub y README | `README.md` |
+| RNF-26 | Pipes `duracion`, `precioArs`, `edad` | `shared/pipes/` |
+| RNF-27 | Directivas `appHighlightButaca`, `appRestrictEdad` | `shared/directives/` |
+| RNF-28 | Validador `butacasContiguas` | `shared/validators/` |
+
+#### Supuestos
+
+| S | Supuesto | Dónde se aplica |
+|---|---|---|
+| S-01 | J y K con 14 lugares; 532 butacas | `plantilla_butacas` y `crear_butacas_sala`; se ve en `sala-butacas` y en el mapa |
+| S-02 | Token aleatorio y validación por sector | `generar_codigo`, `validar_qr`, `ResultadoValidacion` |
+| S-03 | Formatos por sala | `salas.formatos`, `selector-formatos`, `asignar_sala` |
+| S-04 | El anónimo solo paga y declara la edad | Sesión anónima en `ButacasStore`, declaración en `paso-pago`, `comprobantes-locales` |
+| S-05 | Leyenda con la clasificación | `leyendaClasificacion` en `rules/edad.ts`, `vista-comprobante`, `comprobante-pdf` |
+| S-06 | Cupón con edad mínima | `cupones.edad_minima`, `cupones-admin`, `motivo_cupon` |
+| S-07 | Puntos tras el cupón, pendientes y anulables | `confirmar_compra`, `cancelar_compra`, `rules/puntos.ts` |
+| S-08 | Pasarela simulada e intercambiable | `simular_pago` en la base, `pago-service.ts` en Angular |
+| S-09 | Preventa por fecha de compra | `en_preventa`, `enPreventa` |
+| S-10 | Alertas por bandeja y push, una vez | `procesar_alertas`, `notificaciones`, `enviar-push` |
+| S-11 | Candy solo con entrada | `confirmar_compra`, orden del checkout |
+| S-12 | Combo con 2D estándar más la diferencia | `confirmar_compra`, `diferenciaCombo` |
+| S-13 | Cuándo una película cuenta como vista | `vio_pelicula` |
+| S-14 | Una reseña por película, solo de quien la vio | `unique` y RLS de `resenas` |
+| S-15 | Top 3 de 30 días | `top_peliculas` |
+| S-16 | Tipo de sangre opcional y aparte | `datos_sensibles`, `perfil-api.ts` |
+| S-17 | Retención de 10 min con reemplazo y pg_cron | `retener_butacas` (`on conflict … where`), job `limpiar-retenciones` |
+| S-18 | Horarios de validación | `validar_qr` |
+| S-19 | Asignación por menor número | `asignar_sala`, `asignarSalas` |
+| S-20 | Cancela el registrado, la compra entera, sin devolver el cupón | `cancelar_compra`, `motivoNoCancelable` |
+| S-21 | Máximo de 10 butacas configurable | `configuracion.max_butacas_compra`, `retener_butacas` |
+| S-22 | Precio base más recargo VIP fijo | `precio_entrada`, `precios-admin` |
+| S-23 | Un cupón, combinable con crédito | `confirmar_compra`, `paso-pago` |
+| S-24 | Facturación por compra y más vistas por función | `reporte_facturacion`, `reporte_mas_vistas` |
+
+### 13.7 Preguntas sobre la estructura
+
+1. **¿Por qué la carpeta se llama `shared/` y el resto por rol?**
+   Lo compartido va en `shared/`, como en clase. Las pantallas se agrupan por quién las ve, que es también el guard que llevan: así la carpeta dice quién puede entrar.
+
+2. **¿Por qué no hay un `*.routes.ts` por área ni un layout por rol?**
+   Con 37 rutas, un solo `app.routes.ts` se lee entero de un vistazo, como en clase. El menú de cada rol lo arma `MenuPrincipal` con `computed` sobre el rol de `SesionStore`, así que no hace falta un componente de layout.
+
+3. **¿Qué diferencia hay entre `rules/` y `utils/`?**
+   `rules/` tiene las reglas del negocio (precio, edad, cupones) y repite lo que hace la base. `utils/` tiene ayudas técnicas (traducir errores, armar un PDF). Las dos son funciones, pero solo las de `rules/` son lógica del cine.
+
+4. **¿Por qué hay reglas repetidas en `rules/` y en la base?**
+   La base es la que garantiza; `rules/` anticipa para que la persona vea el motivo antes de tocar Pagar. Si alguien se saltea la pantalla, la base igual lo rechaza.
+
+5. **¿Cómo demostrás que cubriste todos los requerimientos?**
+   Con la matriz: el SPEC (sección 12) une cada RF, RN, RNF y S con su diseño y su fase, y esta sección los une con los archivos. Para las RN, además, está la prueba de la regla pura.
+
+6. **¿Qué pasa si se cambia la pasarela de pago?**
+   Se cambia `simular_pago` en la base y, si hiciera falta, `pago-service.ts`. Ninguna pantalla sabe cómo se cobra (S-08).
+
+7. **¿Por qué `supabase/` no está en el repo?**
+   Porque los scripts se aplican a mano en el SQL Editor y uno ya aplicado no se vuelve a correr. El README describe lo que tiene la base; los archivos quedan como respaldo local.
+
+Frase para el oral: "Cada carpeta es una capa con una sola responsabilidad: las pantallas muestran, los stores guardan estado, las Apis hablan con Supabase, las reglas calculan y la base garantiza. Y cada archivo existe por un requerimiento que puedo señalar."
+
+---
+
+## 14. Guía para leer el código a ojo
+
+La idea es no leer carpeta por carpeta, sino **de afuera hacia adentro y siguiendo flujos**: primero cómo arranca la app y qué rutas hay, después las piezas que usa todo el resto, y recién ahí un flujo completo de punta a punta (de la pantalla a la base). Los ABM del admin se parecen mucho entre sí, así que alcanza con leer uno bien.
+
+### 14.1 Cómo leer cada archivo
+
+- **Abrí el `.ts` y el `.html` de un componente lado a lado** (en VS Code, clic derecho en la pestaña → *Split Right*). El `.css` dejalo para el final o salteálo.
+- **Leé primero los comentarios de una línea**: cada función y cada paso tiene uno que dice qué hace. Con eso solo ya entendés el archivo; el código lo confirma.
+- **Movete con el editor, no con el explorador:** `Ctrl+P` abre un archivo por nombre, `F12` va a la definición de lo que tenés bajo el cursor y `Shift+F12` muestra quién lo usa. Así seguís un flujo sin perderte.
+- **En cada archivo contestate tres preguntas:** ¿qué recibe? ¿qué devuelve o muestra? ¿a quién llama?
+- **Tené la app abierta** (`npm start` o Vercel) y tocá en pantalla lo que estás leyendo.
+
+### 14.2 El recorrido, por etapas
+
+#### Etapa 1 · Cómo arranca y qué pantallas hay
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 1 | `src/main.ts` | `bootstrapApplication`: acá empieza todo. Sin `NgModule` |
+| 2 | `src/app/app.config.ts` | Los providers globales: router, `LOCALE_ID` es-AR, zona `-0300` y el service worker |
+| 3 | `src/app/app.routes.ts` | **El mapa de la app.** Cada ruta con su pantalla, `loadComponent` (carga diferida) y el guard que la protege. Leelo entero: después vas a saber dónde está cada cosa |
+| 4 | `src/app/app.ts` y `app.html` | El esqueleto que se ve siempre: menú, bandeja, `<router-outlet />` y los avisos de perfil incompleto y de versión nueva |
+| 5 | `shared/models/menu.model.ts` y `shared/components/menu-principal/` | Cómo cambia el menú según el rol: `computed` sobre `SesionStore.rol()` |
+
+Al terminar tenés que poder decir: "la app tiene cuatro áreas (público, cliente, empleado y admin), cada pantalla baja cuando se la pide y un guard decide quién entra".
+
+#### Etapa 2 · Los cimientos de `shared/`
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 6 | `src/environments/environment.ts` | Solo la URL y claves públicas |
+| 7 | `shared/services/supabase.client.ts` | Cuatro líneas: el único cliente de Supabase de toda la app |
+| 8 | `shared/models/pelicula.model.ts`, `funcion.model.ts`, `butaca.model.ts` | Cómo se tipan las entidades: interfaces con los nombres de columna y uniones de literales (`'ATP' \| '+13' \| '+18'`) |
+| 9 | `shared/api/genero-api.ts` y después `pelicula-api.ts` | El patrón de toda Api: llama a Supabase, si hay error lo lanza, si no devuelve datos. No guarda nada |
+| 10 | `shared/rules/formato.ts` + `formato.spec.ts` | Una regla pura y su prueba. Fijate que no importa nada de Angular |
+| 11 | `shared/pipes/duracion-pipe.ts` | El pipe solo llama a `formatearDuracion` de la regla: la lógica está en `rules/` |
+
+Con esto ya viste las cuatro capas de la sección 3: modelo, Api, regla y la pieza de Angular que la usa.
+
+#### Etapa 3 · Sesión y guards
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 12 | `shared/api/auth-api.ts` | Registro, login, OAuth, sesión anónima y salida: todo `supabase.auth` está acá |
+| 13 | `shared/stores/sesion-store.ts` | **El primer store.** Signals privados (`_sesion`, `_perfil`), sus versiones de solo lectura, los `computed` (`rol`, `edad`, `perfilCompleto`) y `listo()` |
+| 14 | `shared/guard/cliente-guard.ts` y `admin-guard.ts` | 13 líneas cada uno: esperan `listo()`, miran el rol y dejan pasar o redirigen |
+| 15 | `invitado-guard.ts`, `puede-comprar-guard.ts`, `pending-changes-guard.ts` | Los otros tres casos: quien ya entró, quien puede comprar y salir con cambios sin guardar |
+| 16 | `publico/login/` (`.ts` + `.html`) | Un formulario simple con Signal Forms: `form()`, los validadores y el `submit` que llama a la Api |
+
+#### Etapa 4 · Un flujo simple de punta a punta: la cartelera
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 17 | `shared/stores/cartelera-store.ts` | `cargar()` trae una vez y los filtros son `computed` (`filtradas`, `top`): se recalculan solos al cambiar un filtro |
+| 18 | `shared/rules/pelicula.ts` | El filtro de la cartelera (sin tildes ni mayúsculas) |
+| 19 | `publico/inicio/` | La pantalla solo lee el store y dibuja con `@for` |
+| 20 | `shared/components/tarjeta-pelicula/` | Un componente reutilizable con `input()` |
+| 21 | `shared/guard/pelicula-resolver.ts` → `publico/pelicula-detalle/` | La ficha nace con su película; el botón Comprar con `*appRestrictEdad` (`shared/directives/restrict-edad.ts`) |
+
+Es el mismo patrón que en clase: store con signals, `computed` para filtrar y una pantalla que solo muestra.
+
+#### Etapa 5 · El corazón: la compra
+
+Es la parte más importante y la más preguntada. Seguila **en el orden en que la vive el usuario**:
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 22 | `publico/compra/checkout/` | El contenedor: un `@switch` sobre el paso del store. `ngOnDestroy` llama a `reiniciar()` de los dos stores |
+| 23 | `publico/compra/paso-funcion/` | Elegir día y horario con `SelectorFecha` y `SelectorHorario` |
+| 24 | `shared/api/ocupacion-api.ts` | `retener`, `liberar` y `suscribir` (el canal Realtime del mapa) |
+| 25 | `shared/stores/butacas-store.ts` | **El archivo más interesante.** En `cargar()`: primero escucha, después lee (los "paso 1, 2, 3" comentados). En `alternar()`: marca la butaca enseguida, la retiene en la base y vuelve atrás si falla. `aplicarCambio()` recibe lo que llega por Realtime |
+| 26 | `shared/components/mapa-butacas/` + `shared/directives/highlight-butaca.ts` | El mapa recibe `butacas` y emite `alternada`; la directiva pone clases y `aria-*` a cada butaca |
+| 27 | `publico/compra/paso-butacas/` + `shared/validators/butacas-contiguas.ts` + `shared/rules/contiguidad.ts` | El validador propio dentro de Signal Forms, con la lógica en la regla pura |
+| 28 | `publico/compra/paso-candy/` + `shared/rules/candy.ts` | Combos y productos con − y + |
+| 29 | `shared/rules/precio.ts` + `precio.spec.ts` | Cómo se calcula cada entrada, la preventa y la diferencia del combo |
+| 30 | `shared/stores/compra-store.ts` | **El store más grande (505 líneas).** No lo leas de corrido: mirá los `computed` (`entradas`, `resumen`, `subtotal`, `cuponSugerido`, `creditoDisponible`) y después `confirmar()` |
+| 31 | `shared/services/pago-service.ts` | Llama a la RPC con la tarjeta o sin ella; la pasarela está en un solo lugar |
+| 32 | `publico/compra/paso-pago/` | Cupón, crédito, canjes, declaración de edad y tarjeta |
+| 33 | `publico/compra/paso-comprobante/` + `shared/components/vista-comprobante/` + `shared/utils/qr.ts` | QR, código y PDF; las librerías con `import()` |
+
+Cerrá la etapa leyendo **lo que pasa del otro lado**, en `supabase/sql/tp1-sistema-cine.sql`:
+
+- `retener_butacas` (línea 880): el `on conflict … do update … where` que reemplaza retenciones vencidas.
+- `confirmar_compra` (línea 941): la transacción entera, de punta a punta. Es larga; leé los comentarios de cada paso.
+
+Si entendés esta etapa, entendés las tres ideas fuertes del TP: Realtime, reglas anticipadas en Angular y garantizadas en la base, y stores compartidos entre pantallas.
+
+#### Etapa 6 · La base de datos
+
+`supabase/sql/tp1-sistema-cine.sql` está ordenado por bloques. Leelo en este orden, mirando los comentarios de una línea de cada objeto:
+
+| Líneas (aprox.) | Bloque | Qué mirar |
+|---|---|---|
+| 1 a 325 | Tablas | Las columnas, los `check` y las claves. En `funciones` (línea 124), la restricción de exclusión; en `ocupaciones` (línea 233), la clave primaria `(funcion_id, butaca_id)` |
+| 328 a 565 | Funciones auxiliares | `rol_actual`, `es_admin`, `edad`, `precio_entrada`, `en_preventa`, `validar_venta`, `motivo_cupon`: las reglas que después usan las RPC |
+| 566 a 736 | Triggers | Perfil nuevo, fecha de nacimiento fija, auditoría, butacas de la sala nueva, fin de la función |
+| 737 a 1550 | RPC | Programación, butacas, compra, validación, cancelación, cupones, comprobante y reportes |
+| 1551 a 1623 | Tareas de pg_cron | `procesar_recordatorios` y `procesar_alertas` |
+| 1624 a 1702 | Vistas | `peliculas_cartelera`, `saldos_puntos`, `saldos_credito`, `mis_compras` y `mis_peliculas`, todas `security_invoker` |
+| 1703 al final | Seguridad y servicios | RLS en cada tabla, las políticas (desde la línea 1731), los grants, Storage, Realtime (línea 1942) y los tres jobs (línea 1945) |
+
+Después los scripts chicos: `01_base.sql`, `02_permisos_anon.sql`, `03_push.sql` y `04_quita_demo_avisos.sql`.
+
+#### Etapa 7 · El empleado: validar el QR
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 34 | `empleado/validacion/` | Modo acceso o candy, y el formulario del código manual |
+| 35 | `empleado/escaner-qr/` | Emite el código leído con un `output` |
+| 36 | `empleado/resultado-validacion/` | Un `@switch` por cada resultado posible |
+| 37 | `validar_qr` en el SQL (línea 1206) | El QR con dos partes y las ventanas de horario |
+
+#### Etapa 8 · El cliente
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 38 | `cliente/perfil/` + `shared/components/formulario-perfil/` | Un formulario compartido entre Perfil y Completar perfil; cupones, crédito y puntos |
+| 39 | `cliente/mis-compras/` y `cliente/detalle-compra/` | El estado en un chip con `@switch` y la cancelación |
+| 40 | `shared/rules/cancelacion.ts` → `cancelar_compra` en el SQL (línea 1300) | La misma regla dos veces: en Angular para avisar y en la base para garantizar |
+| 41 | `cliente/mis-peliculas/` + `shared/components/estrellas/` | Un control propio con `model()` usado como campo de formulario |
+
+#### Etapa 9 · El admin (leé uno bien y hojeá el resto)
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 42 | `admin/generos-admin/` | **El ABM más simple:** listar, crear, editar y borrar con su Api. Todos los demás siguen este molde |
+| 43 | `admin/pelicula-form/` + `admin/selector-generos/` + `shared/api/imagen-api.ts` | Un formulario grande con Signal Forms, un control propio con `model()`, la subida del póster y la preventa |
+| 44 | `admin/programar-funciones/` + `shared/rules/asignacion.ts` | La vista previa de la asignación de salas (y `asignar_sala` en la línea 764 del SQL) |
+| 45 | `admin/reportes/` + `shared/components/grafico-barras/` | Las tres RPC de reporte, el gráfico y la exportación |
+| 46 | `admin/auditoria/` + `shared/rules/auditoria.ts` | El log con filtros y "Ver datos" |
+
+El resto del admin (salas, precios, candy, cupones, recompensas, cuentas) repite el molde de `generos-admin`: hojealo buscando solo lo distinto.
+
+#### Etapa 10 · Avisos y PWA
+
+| Orden | Archivo | Qué mirar |
+|---|---|---|
+| 47 | `shared/stores/notificaciones-store.ts` | La bandeja: escucha antes de leer, igual que el mapa |
+| 48 | `shared/services/avisos-sistema.ts` | Permiso, aviso con la app abierta y suscripción al push con `SwPush` |
+| 49 | `shared/api/push-api.ts` → `supabase/sql/03_push.sql` | Cómo se guarda el dispositivo y el trigger que dispara el push |
+| 50 | `supabase/functions/enviar-push/index.ts` | 61 líneas: recibe la notificación y la manda a cada dispositivo |
+| 51 | `ngsw-config.json` y `public/manifest.webmanifest` | Qué se cachea y cómo se instala |
+
+### 14.3 Lo que podés dejar para el final o saltear
+
+- Los `.css`: son estilos, no lógica. Si querés ver la identidad, alcanza con los tokens del principio de `src/styles.css`.
+- `shared/utils/comprobante-pdf.ts`, `reporte-pdf.ts` y `excel.ts`: dibujan el PDF y el Excel línea por línea.
+- `shared/rules/mascara.ts` y `directives/mascara-entrada.ts`: solo ponen las barras y los dos puntos mientras se escribe.
+- `angular.json`, `tsconfig*.json`, `.vscode/`, `.editorconfig` y `.prettierrc`: configuración.
+- Los ABM del admin después del primero.
+
+### 14.4 Si tenés solo una hora
+
+Estos diez archivos, en este orden, te dan el TP entero:
+
+1. `app.routes.ts`: las pantallas y quién entra.
+2. `shared/stores/sesion-store.ts` y `shared/guard/cliente-guard.ts`: cómo se sabe quién es el usuario y cómo se protege una ruta.
+3. `shared/api/ocupacion-api.ts`: una Api con Realtime.
+4. `shared/stores/butacas-store.ts`: el mapa en tiempo real.
+5. `shared/validators/butacas-contiguas.ts` y `shared/rules/contiguidad.ts`: el validador que pidió la cátedra.
+6. `shared/rules/precio.ts` con su `.spec.ts`: una regla pura y su prueba.
+7. `shared/stores/compra-store.ts`, solo los `computed` y `confirmar()`.
+8. `publico/compra/checkout/`: el `@switch` del flujo.
+9. `confirmar_compra` en `tp1-sistema-cine.sql`: lo que garantiza la base.
+10. `admin/generos-admin/`: el molde de todo ABM.
+
+### 14.5 Cómo saber que ya lo entendiste
+
+Probá contestar sin mirar:
+
+- Si toco una butaca, ¿qué archivos se ejecutan, en qué orden, y cómo se entera otro usuario que la está mirando?
+- ¿Dónde se calcula el precio de una entrada y por qué está en dos lugares?
+- ¿Qué pasa si un cliente de 16 años abre la URL de compra de una película +18 a mano?
+- ¿Por qué el checkout usa stores y `generos-admin` llama directo a su Api?
+- ¿Qué archivo tendrías que cambiar para que la retención dure 15 minutos en vez de 10? (Ninguno: es `configuracion.minutos_retencion` en la base.)
+
+Si las cinco te salen, ya podés explicar cualquier otra parte siguiendo el mismo patrón.
+
+---
+
+## 15. Decisiones por tema: lo de la cátedra y lo de afuera
+
+La sección 2 explica las decisiones grandes una por una, y la 12 dice de qué lámina sale cada técnica. Esta sección junta las dos cosas y las ordena **por tema**, en dos partes:
+
+- **Parte A:** temas que se vieron en clase o que están en el contenido de la cátedra. Acá la defensa es "lo hice como en clase", y lo interesante es dónde se aplicó.
+- **Parte B:** temas y herramientas que **no** estaban en el contenido de la cátedra. Acá la defensa es "por qué hizo falta": cada uno lo pide un requerimiento, lo pidió la cátedra después o resuelve algo que lo de clase no podía resolver.
+
+El criterio que ordena todo: **en Angular, todo como en clase; lo que no se vio vive en la base o lo pidió la cátedra.** Si hacía falta algo nuevo, se frenaba y se elegía entre la alternativa de clase y la nueva.
+
+Cada fila sigue el mismo molde: **el problema, la decisión, el porqué, lo que se descartó y dónde está explicado en detalle.**
+
+### Parte A · Temas vistos en clase
+
+#### A1. Arranque, configuración y estructura
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Cómo arranca la app | Standalone, con `bootstrapApplication(App, appConfig)` y sin `NgModule` (2·8) | Es como se arma una app en Angular moderno y lo pide RNF-01 | `NgModule` | 4.2, 12.1 |
+| Que el compilador encuentre errores antes de correr | `strict` y `strictTemplates` (2·15) | El proyecto se generó sin ellos y la cátedra los pide. Con `strictTemplates`, un campo mal escrito en el HTML no compila | Dejarlos apagados | 4.1 |
+| Dónde va cada cosa | `shared/` con subcarpetas en inglés (8·3) y las pantallas agrupadas por quién las ve | Son los nombres de la lámina, y la carpeta dice qué guard lleva cada pantalla | `compartido/` en español | 13.4 |
+| Configuración por entorno | `environment.ts` y `environment.prod.ts` con `fileReplacements` (6·20) | La URL y las claves públicas cambian entre local y producción sin tocar código | `environment.development.ts` del CLI | 12.2 |
+| Despliegue | Vercel con el preset de Angular, sin `vercel.json` (Clase 6, errores típicos) | El preset ya manda cualquier ruta a `index.html`, que es lo que resuelve el refresco en una ruta interna | Un `vercel.json` con rewrites | 4.1 |
+
+#### A2. Componentes y cómo se comunican
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Piezas que se repiten en varias pantallas | Componentes en `shared/components/` con `input()` y `output()` (2·19-20) | RNF-03. El mapa recibe las butacas y emite la tocada; no sabe de Supabase | — | 13.5 |
+| Controles propios que funcionen como un campo de formulario | `model()`, como el `PriorityPicker` (4·10-13): selectores de géneros, formatos, productos, días, hora y fecha; `Estrellas`; `VerClave` | El valor va y vuelve entre padre e hijo con `[(valor)]`, y Signal Forms lo trata como un campo más | — | 12.1 |
+| Un menú que no entraba con las doce pantallas del admin | `MenuPrincipal`: los grupos son datos en `menu.model.ts` y el componente elige con `computed` sobre el rol | Cada rol ve lo suyo sin HTML repetido; el menú emite `salir` y no sabe de Supabase | Menú plano en `app.html` y `@angular/animations` | 2.24 |
+| El mismo formulario de perfil en dos pantallas | `FormularioPerfil` con `model()`, usado por `Perfil` y `CompletarPerfil` | Las cuentas de email, GitHub y Google completan el perfil en el mismo paso | Registro en una sola pantalla (obligaba a pasar el formulario entre componentes con técnicas no vistas) | 2.21 |
+
+#### A3. Signals, stores y acceso a datos
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Estado que comparten varias pantallas | Stores con `signal` y `computed`, en `root` (2·21, 2·27, 5·5) | RNF-02. Los filtros de la cartelera y el resumen de la compra se recalculan solos, como el filtro de `TaskList` | — | 2.10 |
+| Reaccionar a un cambio (entra un usuario, cambia la selección) | `effect` (4·25) | Carga el perfil, abre la bandeja y copia la selección de butacas al formulario | `linkedSignal` (no se vio) | 12.2 |
+| Que la compra siguiente no arrastre la anterior | `reiniciar()` en `CompraStore` y `ButacasStore`, llamado en el `ngOnDestroy` del checkout, con `removeChannel` (6·13) | La limpieza queda en un método que se puede leer: libera butacas, cierra el canal y vacía | Stores provistos en el componente; `DestroyRef` | 2.10 |
+| Separar el acceso a datos | Una Api por dominio que llama, lanza el error y devuelve datos, como `TaskApi` | RNF-07: la pantalla no sabe de Supabase y el store no sabe de HTML | Llamar a Supabase desde los componentes | 3 |
+| Tipar lo que devuelve la base | Modelos con los nombres de columna (`fecha_estreno`) | `data as PeliculaModel`, como en clase, es cierto sin una capa de mapeo | Traducir a camelCase | 2.19 |
+| Un solo lugar para la pasarela de pago | `PagoService` común en `root` (5·5) | Para cambiar la pasarela se toca un archivo | Clase abstracta con `useClass` | 2.8 |
+
+#### A4. Plantillas y control de flujo
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Mostrar una cosa u otra según un estado | `@if`, `@for` con `track` y `@switch` (2·26, 4·18) | RNF-04. El checkout es un `@switch` sobre el paso; el resultado de validación, otro sobre el resultado | `*ngIf` y `*ngFor` (no hay ninguno) | 13.2 |
+
+#### A5. Formularios y validación
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Todos los formularios | Signal Forms: `form()`, `[formField]` y `submission` (3·18-19, 4·20-25) | RNF-05. El modelo del formulario es un signal: se lee y se escribe como cualquier otro | — | 12.1 |
+| Butacas que tienen que estar juntas | Validador propio `butacasContiguas` sobre `validate()` (3·19), con la lógica en `rules/contiguidad.ts` | RNF-28 y RN-25. El mensaje aparece antes de pagar; la base lo vuelve a controlar | — | 2.12 |
+| Marcar todos los campos al enviar | Nada: en Angular 22.2 `submit` ya lo hace | La lámina 4·24 usa `onInvalid: 'touch'`, que en 22.2 no compila así | — | 12.3 |
+| Entrar como admin sin tipear (pedido de la cátedra) | `borrador.set(...)` sobre el modelo del `form()` | Es escribir en el signal que Signal Forms ya vigila: no suma ninguna técnica | — | 2.22 |
+
+#### A6. Rutas, carga diferida y guards
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Que cada usuario baje solo lo que usa | `loadComponent` en cada ruta (3·5-6) | RNF-06: la app arranca más rápido | `loadChildren` con un `*.routes.ts` por área | 2.11 |
+| Que nadie entre a un área que no es suya | Un guard funcional por rol en `canMatch` (6·17, 7·5-7) | Con `canMatch` el chunk ni se descarga. Cada guard se lee como el `adminGuard` de la lámina | Un guard fábrica `rolGuard(roles)` | 2.11 |
+| Un admin recién logueado terminaba en la portada | Los guards esperan `sesion.listo()`, que espera el perfil (que trae el rol) | Justo después de entrar, la sesión ya cambió pero el rol todavía no llegó | Esperar solo la sesión | 2.21 |
+| No perder un formulario ni dejar butacas retenidas | `pendingChangesGuard` con `canDeactivate` y `confirm()` (7·6, 8·6) | Pregunta antes de salir | — | 12.2 |
+| Que la ficha no aparezca vacía | `peliculaResolver` (7·7, 8·7) y la película como `input()` con `withComponentInputBinding` | La pantalla nace con su dato | — | 12.1 |
+| ¿Los guards dan seguridad? | No: "el guard no es seguridad" (6·17). La dan el RLS y las RPC | El código de Angular llega al navegador y cualquiera lo lee | — | 2.11 |
+
+#### A7. Pipes y directivas
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Mostrar duración, pesos y edad | Pipes puros `duracion`, `precioArs` y `edad` (7·9-11) | RNF-26. El pipe solo llama a la regla pura, que se prueba con Vitest | — | 2.12 |
+| Que el mapa no dependa solo del color | `appHighlightButaca`, de atributo con `host`, como `appHighlight` (7·14) | RNF-27 y RNF-20: clases y `aria-*` en cada butaca | — | 2.12 |
+| Ocultar Comprar si la edad no alcanza | `*appRestrictEdad`, estructural como `*appIfOverdue` (7·15); el motivo lo muestra el componente con `@if` | La directiva hace una sola cosa | De atributo con `exportAs` | 2.12 |
+| Escribir fechas, horas y tarjetas sin tipear las barras | `appMascara`, otra directiva de atributo, con la lógica en `rules/mascara.ts` | Misma técnica que `appHighlightButaca`, aplicada a un `input` | — | 4.4 |
+
+#### A8. Supabase visto en clase
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Conectarse a Supabase | Un solo cliente como constante de módulo (6·6) con la clave publicable en el front (5·19) | La clave es pública por diseño: lo que protege es el RLS | — | 4.4 |
+| Login | Supabase Auth con GitHub como en clase; email con clave, Google y la recuperación usan la misma API `supabase.auth` | RF-01, RF-02 y RNF-09 piden los tres proveedores | Solo GitHub | 2.21, 2.25 |
+| Quién ve qué fila | RLS con políticas "dueño de la fila" más un `for all` del admin, como la tabla `tasks` | RNF-10 | — | 2.5 |
+| Valores cerrados en la base | `text` + `check (... in (...))` (5·10) | Igual que la tabla `tasks` | `enum` | 12.2 |
+| Mapa y bandeja en vivo | Realtime con `channel().on('postgres_changes')`, filtrando en el callback (6·10) | RNF-12 y RF-28 | `filter` en la suscripción | 12.2 |
+| Imágenes | Storage con la ruta `{id}/{nombre normalizado}`, como `attachments.ts` | RNF-13 | — | 4.4 |
+| Armar la base | Scripts pegados en el SQL Editor (6·5) | Cada script entre `begin;` y `commit;`: todo o nada | CLI y migraciones | 2.18 |
+
+#### A9. PWA
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Que se pueda instalar | `ng add @angular/pwa`, manifest e íconos propios (7·17-18, 8·20-22) | RNF-14 | — | 4.1 |
+| Avisar que hay una versión nueva | `SwUpdate` en `app.ts` con un signal y `@if` (8·23) | RNF-15; copia directa de la lámina | Un componente con `toSignal` | 12.2 |
+| Que el visitante no descargue el admin | **Desvío a propósito:** `namedChunks` y las pantallas de las áreas en `installMode: lazy` | La lámina 8·21 precachea todo el JS y eso anulaba el ahorro de `canMatch` | Precachear todo, como la lámina | 12.3 |
+
+#### A10. Pruebas
+
+| Problema | Decisión | Por qué | Descartado | Ver |
+|---|---|---|---|---|
+| Qué probar | Solo funciones puras de `rules/` y `utils/` con Vitest (21 archivos `.spec.ts`) | RNF-23 pide precio, cupones, edad, puntos y asignación. Se prueba la lógica, sin TestBed ni red | Los specs "should create" de taskflow | 12.3 |
+
+### Parte B · Temas y herramientas fuera del contenido de la cátedra
+
+Para cada uno, la primera pregunta del profe va a ser "¿por qué usaste algo que no vimos?". La columna "Quién lo pide" es la respuesta corta.
+
+#### B1. Lógica en la base de datos (Postgres)
+
+| Problema | Decisión | Quién lo pide | Por qué | Descartado | Ver |
+|---|---|---|---|---|---|
+| Que dos personas no compren la misma butaca | Retenciones y ventas en `ocupaciones`, con clave primaria `(funcion_id, butaca_id)` | RN-04 | Postgres no deja dos filas con la misma clave: uno gana y el otro choca | Dos tablas (dos canales de Realtime, `entradas` pública) | 2.2 |
+| Que dos funciones no se pisen en la misma sala | Restricción de exclusión con `btree_gist` sobre un `tstzrange` `[)` | RN-02 | Es un `unique` para rangos de tiempo; un trigger fallaría con dos admins a la vez | Trigger o validación en la RPC | 2.3 |
+| Vender, validar, cancelar y programar sin estados a medias | RPC `security definer` con `search_path` vacío, `for update` y `on conflict` | RNF-11 y la sección 5 del documento | Todo pasa en una transacción y la función valida todo antes de escribir | Escribir desde Angular con RLS (no puede validar entre tablas) | 2.4 |
+| Pagar y guardar a la vez | El pago simulado (`simular_pago`) dentro de `confirmar_compra` | S-08 | No puede pasar "pagó pero no se guardó"; la tarjeta no se guarda en ningún lado | Pagar desde Angular y después confirmar | 2.8 |
+| Un QR que no se pueda adivinar ni lleve datos | Código de 10 caracteres con `gen_random_bytes` | RF-54, S-02 | Unos 50 bits de azar; la base sabe a qué compra corresponde | Un JWT firmado | 2.9 |
+| Que el cliente edite su perfil pero no su rol | `grant update` por columna | Decisión de diseño | RLS filtra filas; el grant, columnas | — | 2.5 |
+| Que una vista no se saltee el RLS | Vistas con `security_invoker = true` | RNF-10 | Sin eso, la vista corre con los permisos de su dueño | — | 2.5 |
+| Tipo de sangre que ni el admin vea | Tabla aparte `datos_sensibles`, solo el titular | RNF-22, S-16, Ley 25.326 | RLS no oculta columnas | Una columna en `perfiles` | 2.6 |
+| Quitarle al visitante sin sesión las RPC que no le corresponden | `revoke execute` en `02_permisos_anon.sql` | RNF-10 | Por defecto Postgres deja ejecutar a todos | — | 4.7 |
+
+#### B2. Triggers y tareas programadas
+
+| Problema | Decisión | Quién lo pide | Por qué | Descartado | Ver |
+|---|---|---|---|---|---|
+| Registrar todo cambio, venga de donde venga | Trigger genérico `auditar_cambio` con `to_jsonb(old)` y `to_jsonb(new)` | RN-24 | Hasta un cambio hecho desde el panel queda anotado | Auditar desde Angular | 2.13 |
+| Cosas que tienen que pasar siempre al insertar | Triggers: perfil nuevo, fecha de nacimiento fija, butacas de la sala nueva, fin de la función, autor de la reseña | RNF-11; varios por decisión | No dependen de que la pantalla se acuerde | — | 12.4 |
+| Cosas que dispara el paso del tiempo | pg_cron: limpiar retenciones (1 min), recordatorios (5 min) y alertas (10 min) | S-17 | Un trigger no se dispara por el reloj | — | 2.14 |
+| Puntos que se liberan cuando empieza la función | Sin job: `disponible_desde` y comparar con `now()` | S-07 | Donde alcanza con comparar fechas, no hace falta cron | Un job que mueva saldos | 2.14 |
+
+#### B3. Supabase más allá de lo visto
+
+| Problema | Decisión | Quién lo pide | Por qué | Descartado | Ver |
+|---|---|---|---|---|---|
+| Comprar sin cuenta | Sesión anónima con `signInAnonymously()` al tocar la primera butaca | RNF-09, S-04 | La retención necesita un dueño y el anónimo no deja datos | — | 2.7 |
+| Que el admin cree cuentas sin perder su sesión | Un segundo cliente de Supabase que no guarda sesión, más la RPC `asignar_rol` | RF-06 (D-23) | Sin `service_role` en ningún lado | Una Edge Function con `service_role` | 2.16 |
+| Avisos con la app cerrada | Edge Function `enviar-push`, pg_net, Vault, `web-push`, VAPID y `SwPush` | La cátedra, el 09/10 (D-25) | La base no puede cifrar ni firmar un push, y la clave privada no puede ir en Angular | Vercel Functions, OneSignal, Firebase | 2.23 y 16 |
+
+#### B4. Navegador y PWA
+
+| Problema | Decisión | Quién lo pide | Por qué | Descartado | Ver |
+|---|---|---|---|---|---|
+| Ver el comprobante sin conexión y sin cuenta | Los últimos 20 en `localStorage` | RNF-15, S-04 | El anónimo no tiene dónde guardarlos en la base | — | 4.4 |
+| Avisar con la app abierta | `showNotification` del service worker | RNF-16 | En Chrome para Android `new Notification()` no está permitido | `new Notification()` | 2.15 |
+| Desplegables con el mouse en la computadora y no en el celular | `window.matchMedia` | Pedido del 09/10 (barra) | Es la API del navegador para saber si hay mouse y el ancho | — | 2.24 |
+
+#### B5. Librerías
+
+| Problema | Decisión | Quién lo pide | Por qué | Descartado | Ver |
+|---|---|---|---|---|---|
+| Generar el QR sin red | `qrcode` | RF-53 | Funciona en modo avión; se carga con `import()` | — | 2.17 |
+| Leer el QR con la cámara | `@zxing/browser` | RF-55 | Lee desde la cámara del navegador, con HTTPS | — | 4.6 |
+| PDF del comprobante y del reporte | `jspdf` | RF-51, RF-82 | Se arma en el teléfono | — | 2.17 |
+| Exportar a Excel | `write-excel-file` | RF-82 | Un `.xlsx` real con una función | `xlsx` (versión de npm desactualizada y con vulnerabilidades) | 2.17 |
+| Gráficos | Ninguna: barras con CSS y `@for` | RF-80, RF-81 | Dos gráficos de barras no justifican una librería | Una librería de gráficos | 2.17 |
+
+#### B6. Formato argentino
+
+| Problema | Decisión | Quién lo pide | Por qué | Ver |
+|---|---|---|---|---|
+| Fechas, pesos y hora de Buenos Aires | `registerLocaleData`, `LOCALE_ID` en es-AR y `DATE_PIPE_DEFAULT_OPTIONS` en `-0300` | RNF-21 | Sin esto, el `DatePipe` muestra el formato y la hora del navegador | 4.3 |
+
+#### B7. Herramientas de trabajo
+
+| Problema | Decisión | Por qué | Ver |
+|---|---|---|---|
+| Probar el SQL antes de aplicarlo | PGlite (Postgres en memoria) con imitaciones de `auth`, `storage` y `cron`: 151 controles | Un script mal aplicado no se puede editar; mejor encontrar el error antes | 2.18 |
+| Ver si un push salió de verdad | La tabla `net._http_response` y los logs de la Edge Function | Así se encontró el error del secreto el 09/10 | 16.13 |
+
+Frase para el oral: "En Angular hice todo como en clase. Lo que no se vio son cosas de la base o del push: o las pide el documento (las reglas críticas en la base, la sesión anónima, pg_cron), o las pidió la cátedra (el push con la app cerrada), o lo de clase no alcanzaba (cifrar y firmar un push)."
+
+---
+
+## 16. Push notifications paso a paso
+
+### 16.1 Qué problema resuelve
+
+Antes de F16 los avisos llegaban por dos canales: la **bandeja** (Realtime) y el **aviso del sistema** con la app abierta (sección 2.15). Los dos necesitan que la app esté corriendo. El 09/10 la cátedra pidió que lleguen **también con la app cerrada** (D-25). Eso es un push: un mensaje que un servidor le manda al navegador por medio del **servicio de push** del fabricante, y que el **service worker** muestra aunque la página no esté abierta.
+
+Lo que hace difícil el push es que cada mensaje tiene que ir **cifrado** para ese dispositivo y **firmado** por el servidor que lo manda. Postgres no puede hacer ninguna de las dos cosas, y la clave que firma no puede estar en Angular, porque todo lo de Angular llega al navegador. Por eso aparece una pieza nueva: una **Edge Function**.
+
+### 16.2 Las piezas
+
+| Pieza | Dónde vive | Qué hace |
+|---|---|---|
+| `AvisosSistema` | `shared/services/avisos-sistema.ts` | Pide permiso, suscribe el dispositivo con `SwPush` y lo da de baja al salir |
+| `PushApi` | `shared/api/push-api.ts` | Llama a las RPC que guardan y borran la suscripción |
+| `suscripciones_push` | Base (`03_push.sql`) | Una fila por dispositivo suscripto: `usuario_id`, `endpoint`, `p256dh` y `auth` |
+| `guardar_suscripcion_push` y `borrar_suscripcion_push` | Base | La única forma de escribir esa tabla |
+| `notificaciones` | Base | Toda fila nueva es un aviso: de ahí salen los tres canales |
+| Trigger `notificaciones_validacion` | Base, `before insert` | Le suma sector, fecha y hora al aviso de QR validado |
+| Trigger `notificaciones_push` (función `enviar_push`) | Base, `after insert` | Junta las suscripciones del usuario, lee el secreto y llama a la Edge Function |
+| pg_net | Extensión de Postgres | Hace el pedido HTTP desde la base, después del commit |
+| Vault | Base | Guarda el secreto compartido `push_secreto`, cifrado |
+| Edge Function `enviar-push` | Servidores de Supabase (Deno) | Verifica el secreto, cifra y firma con `web-push` y envía a cada dispositivo |
+| Servicio de push | Google (FCM), Mozilla o Apple | Recibe el mensaje y se lo entrega al dispositivo cuando está en línea |
+| Service worker de Angular (`ngsw-worker.js`) | El navegador del usuario | Recibe el push y muestra el aviso; al tocarlo, abre la app |
+
+```text
+ Celular del cliente                      Supabase                                   Afuera
+┌──────────────────────┐   1 suscribir   ┌────────────────────────────────────┐
+│ Activar avisos       │ ──────────────► │ guardar_suscripcion_push           │
+│ AvisosSistema +      │   (RPC)         │   └─► suscripciones_push            │
+│ SwPush               │                 │                                    │
+│                      │                 │ 2 nace un aviso (cron, validar_qr) │
+│                      │                 │   INSERT en notificaciones          │
+│                      │                 │   ├─ before: completa el cuerpo     │
+│                      │                 │   └─ after: enviar_push ────────┐   │
+│                      │                 │        lee Vault, arma el JSON  │   │
+│                      │                 │        pg_net.http_post         │   │
+│                      │                 └─────────────────────────────────┼───┘
+│                      │                                                   ▼ 3 (después del commit)
+│                      │                 ┌────────────────────────────────────┐
+│                      │                 │ Edge Function enviar-push          │
+│                      │                 │   ¿x-push-secreto correcto?         │
+│                      │                 │   cifra con p256dh/auth             │
+│                      │                 │   firma con VAPID privada ──────────┼──► 4 servicio de push
+│                      │                 └────────────────────────────────────┘     (FCM, Mozilla, Apple)
+│ service worker       │ ◄───────────────────────────────────────────────────────── 5 entrega el mensaje
+│ muestra el aviso     │
+│ 6 tocar → abre la URL│
+└──────────────────────┘
+```
+
+### 16.3 Las palabras que hay que saber
+
+| Término | Qué es |
+|---|---|
+| Service worker | Un script que el navegador corre aparte de la página. Sigue vivo con la app cerrada y es el que recibe el push. Acá es el de Angular (`ngsw-worker.js`) |
+| Suscripción push | Lo que entrega el navegador al aceptar: un **`endpoint`** (la dirección de ese dispositivo en el servicio de push) y dos claves, **`p256dh`** y **`auth`**, para cifrarle los mensajes |
+| VAPID | Un par de claves que identifica al servidor que envía. La **pública** va en Angular y se usa al suscribir; la **privada** firma cada push y solo la tiene la Edge Function |
+| Edge Function | Una función de TypeScript que Supabase corre en sus servidores con Deno. Se llama por HTTP |
+| `web-push` | La librería que cifra el mensaje con las claves del dispositivo y lo firma con VAPID |
+| pg_net | Extensión que permite hacer un pedido HTTP desde Postgres. Es asíncrona: encola el pedido y lo manda después del commit |
+| Vault | El lugar cifrado de Supabase para secretos dentro de la base |
+| `tag` | Etiqueta del aviso. Dos avisos con el mismo `tag` no se duplican: el segundo reemplaza al primero |
+| TTL | Cuánto tiempo guarda el servicio de push el mensaje si el dispositivo está apagado (acá, 24 horas) |
+
+### 16.4 Lo que se configuró una sola vez
+
+1. **Claves VAPID:** se generó un par. La pública va en `environment.ts` y `environment.prod.ts` (`vapidPublicKey`); la privada nunca se escribió en el repo ni en la base.
+2. **Edge Function:** se creó `enviar-push` desde el panel (Edge Functions → Deploy a new function), pegando `supabase/functions/enviar-push/index.ts`, igual que el SQL va por el SQL Editor: sin CLI.
+3. **`verify_jwt` apagado:** por defecto Supabase exige un token de usuario para llamar a una función. Acá quien llama es la base, que no tiene sesión, así que se apagó y la protección es el secreto compartido.
+4. **Cuatro secretos de la función:** `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (un `mailto:`, porque Apple rechaza otras formas) y `PUSH_SECRETO`.
+5. **El mismo secreto en Vault:** con una consulta aparte, que no está en ningún archivo: `select vault.create_secret('<valor>', 'push_secreto');`
+6. **`03_push.sql`:** pg_net, la tabla `suscripciones_push` con RLS, las dos RPC y los dos triggers.
+7. **Prueba aislada:** la función envió a un solo dispositivo y respondió 201.
+
+### 16.5 Fase 1 · El cliente activa los avisos
+
+1. En `/cuenta/notificaciones` el cliente toca **Activar avisos**. `Notificaciones` llama a `AvisosSistema.activar()`.
+2. `activar()` pide el permiso con `Notification.requestPermission()`. Tiene que ser desde un clic: el navegador no lo pregunta sin un gesto del usuario.
+3. Si el permiso es `granted`, `suscribir()` llama a `swPush.requestSubscription({ serverPublicKey: environment.vapidPublicKey })`. El navegador habla con su servicio de push y devuelve la suscripción: `endpoint`, `p256dh` y `auth`.
+4. `PushApi.guardar()` manda esos tres datos a la RPC `guardar_suscripcion_push`.
+5. La RPC exige un cliente registrado (`es_registrado()`, si no `AVISOS_SOLO_REGISTRADOS`) e inserta la fila con `auth.uid()`. Si el `endpoint` ya existía (el mismo navegador, otra cuenta), el `on conflict (endpoint) do update` la pasa al usuario actual.
+6. **Las veces siguientes no hace falta tocar nada:** cuando entra un usuario, `NotificacionesStore` llama a `suscribir()`. Si el permiso ya estaba dado, vuelve a guardar la suscripción para esa cuenta sin preguntar.
+
+### 16.6 Fase 2 · Nace un aviso
+
+Nadie dispara un aviso a mano. Hay tres orígenes, y los tres terminan en un `INSERT` en `notificaciones`:
+
+| Aviso | Quién lo inserta | Cuándo |
+|---|---|---|
+| Recordatorio de 24 h y de 2 h (RF-87, RF-88) | `procesar_recordatorios`, desde el job `recordatorios` | Cada 5 minutos revisa qué funciones están por empezar |
+| QR validado (RF-89) | `validar_qr` | En el acto, cuando el empleado valida |
+| Alerta de venta (RF-69) | `procesar_alertas`, desde el job `alertas-venta` | Cada 10 minutos, cuando una película con alerta tiene entradas a la venta |
+
+En el momento del `INSERT` pasan dos triggers, en este orden:
+
+1. **`before insert` → `notificaciones_validacion`:** solo para los avisos de QR validado. Cambia el cuerpo antes de guardarlo y le suma "· Acceso · 09/10 21:34 h". Se hizo con un trigger para no reescribir `validar_qr`, que ya estaba aplicada.
+2. Se guarda la fila. Desde acá salen los canales 1 y 2: Realtime se la entrega a `NotificacionesStore`, que la pone en la bandeja y, si la app está abierta, muestra el aviso del sistema.
+3. **`after insert` → `notificaciones_push`:** el canal 3, el push. Como corre después, ya ve el cuerpo completo.
+
+### 16.7 Fase 3 · El trigger le pasa el aviso a la Edge Function
+
+Función `enviar_push()` en `03_push.sql`:
+
+1. Junta en un JSON todas las suscripciones del usuario de la notificación (`jsonb_agg` sobre `suscripciones_push`).
+2. **Si no tiene ninguna, termina.** No hay pedido ni costo: ese usuario no activó avisos.
+3. Lee `push_secreto` de `vault.decrypted_secrets`. Puede porque es `security definer`: corre con los permisos del dueño de la base. Si el secreto no está, termina.
+4. Llama a `net.http_post` con:
+   - la URL de la función (`…/functions/v1/enviar-push`);
+   - el cuerpo: la notificación (`id`, `titulo`, `cuerpo`, `url`) y las suscripciones;
+   - los encabezados `Content-Type` y **`x-push-secreto`** con el valor de Vault;
+   - un tiempo máximo de 5 segundos.
+5. **pg_net no espera la respuesta:** encola el pedido y lo manda un proceso aparte, después del commit. Si el push tarda o falla, la compra, la validación o el job siguen sin enterarse, y la bandeja ya tiene el aviso.
+
+Nadie puede llamar a `enviar_push()` a mano: el script le quita el permiso de ejecutar a `public`, `anon` y `authenticated`.
+
+### 16.8 Fase 4 · La Edge Function envía
+
+Archivo `supabase/functions/enviar-push/index.ts`, de arriba hacia abajo:
+
+1. Importa `web-push` desde npm (`npm:web-push@3.6.7`) y carga las tres claves VAPID con `setVapidDetails`.
+2. `Deno.serve` atiende cada pedido. Lo primero que hace es comparar `x-push-secreto` con `PUSH_SECRETO`. **Si no coincide, responde 401** y no hace nada más. Así solo la base puede usarla.
+3. Lee la notificación y las suscripciones del cuerpo. **No consulta la base** ni usa `service_role`: todo lo que necesita ya viene armado por el trigger.
+4. Arma el mensaje en el formato que entiende el service worker de Angular: `notification` con `title`, `body`, `icon`, `tag` (`notificacion-{id}`) y `data.onActionClick` con la operación `navigateLastFocusedOrOpen` y la `url` del aviso.
+5. Por cada suscripción llama a `webpush.sendNotification`, que cifra el mensaje con `p256dh` y `auth` de ese dispositivo, lo firma con la VAPID privada y lo manda al `endpoint`. Va con `TTL` de 24 horas y urgencia alta.
+6. Usa `Promise.allSettled`: si un dispositivo falla, los demás igual reciben su push.
+7. Devuelve el estado de cada envío (201 si el servicio de push lo aceptó; 404 o 410 si ese dispositivo ya no existe), que queda en los logs y en `net._http_response`.
+
+### 16.9 Fase 5 · El aviso llega al dispositivo
+
+1. El servicio de push (FCM en Android y Chrome, Mozilla en Firefox, Apple en iPhone) guarda el mensaje y se lo entrega al dispositivo cuando está en línea, hasta 24 horas después.
+2. El navegador despierta al service worker de Angular, que muestra el aviso con el título, el cuerpo y el ícono. **La app puede estar cerrada.**
+3. **Sin duplicados:** si la app estaba abierta, el canal 2 ya había mostrado el mismo aviso con el mismo `tag`. El push lo reemplaza en lugar de sumar otro.
+4. Al tocar el aviso, `navigateLastFocusedOrOpen` enfoca la app si estaba abierta, o la abre, en la `url` del aviso: por ejemplo `/cuenta/compras/{id}`, con el QR.
+
+### 16.10 Fase 6 · El cliente cierra sesión
+
+1. `MenuPrincipal` emite `salir` y `app.ts` llama a `AvisosSistema.desuscribir()` **antes** del `signOut`.
+2. `desuscribir()` busca la suscripción del navegador, llama a `borrar_suscripcion_push` (que borra solo si la fila es de ese usuario) y después la da de baja en el navegador.
+3. Así el próximo que use ese equipo no recibe los avisos de la cuenta anterior. Si la baja falla, la salida sigue igual: el dispositivo queda suscripto y pasa a la próxima cuenta que active los avisos.
+
+### 16.11 Seguridad: quién puede hacer qué
+
+| Riesgo | Qué lo impide |
+|---|---|
+| Que alguien llame a la Edge Function y mande avisos falsos | El secreto en `x-push-secreto`: sin él responde 401. El secreto está en Vault y en los secretos de la función, no en el repo ni en Angular |
+| Que alguien firme pushes a nombre de Cineverso | La VAPID privada solo existe como secreto de la función |
+| Que un cliente lea o borre suscripciones de otro | RLS: solo lee las suyas. Nadie escribe la tabla directo; las RPC usan `auth.uid()` |
+| Que un anónimo se suscriba | `guardar_suscripcion_push` exige un usuario registrado (los avisos son solo de clientes, D-08) |
+| Que alguien dispare el trigger a mano | `revoke execute` de `enviar_push` y `completar_aviso_validacion` |
+| Que la función lea datos de la base | No tiene cómo: no usa `service_role` ni consulta tablas |
+
+### 16.12 Qué pasa si algo falla
+
+| Falla | Qué pasa | El aviso igual llega por… |
+|---|---|---|
+| El cliente no dio permiso | No hay suscripción y el trigger termina en el paso 2 | La bandeja |
+| La Edge Function no responde | pg_net corta a los 5 segundos; la transacción original no se entera | La bandeja |
+| El secreto no coincide (lo que pasó el 09/10) | La función responde 401 y no envía nada | La bandeja y, con la app abierta, el aviso del sistema |
+| El dispositivo desinstaló la app o borró los datos | El servicio de push responde 404 o 410 para ese endpoint; los otros dispositivos reciben igual | La bandeja en los otros dispositivos |
+| El celular está apagado | El servicio de push guarda el mensaje 24 horas | El push al prenderlo, y la bandeja |
+
+**Lo que no se hizo:** cuando un endpoint responde 404 o 410, la fila queda en `suscripciones_push`. Lo correcto sería borrarla, pero la función no toca la base a propósito. No rompe nada: ese envío falla y los demás siguen.
+
+### 16.13 El incidente del 09/10 y cómo se verifica un envío
+
+- **Qué pasó:** hasta las 18:54, la función respondió 401 a todo, porque `PUSH_SECRETO` no coincidía con el valor de Vault. Parecía que el push andaba, pero lo que se veía eran avisos del canal 2 (la app seguía abierta o en segundo plano).
+- **Cómo se detectó:** la alerta de venta, con la app cerrada de verdad, no llegó.
+- **Cómo se encontró:** en `select status_code, content from net._http_response order by created desc;` y en los logs de la función.
+- **Cómo se arregló:** pegando en `PUSH_SECRETO` el valor de Vault, sin redesplegar. Después, un QR validado con la app cerrada llegó en Android: la función respondió 200 y FCM, 201 para los dos dispositivos.
+- **Lo que se aprendió:** el push se verifica con la app cerrada del todo y mirando las respuestas, no a ojo.
+
+### 16.14 En cada dispositivo
+
+| Dispositivo | Cómo llega | Cuidado |
+|---|---|---|
+| Android (Chrome) | Con la app y el navegador cerrados | Ahorro de batería y "No molestar". Probado |
+| PC (Chrome o Edge) | Con la pestaña cerrada, mientras el navegador siga corriendo; si está cerrado, al abrirlo | Notificaciones de Chrome habilitadas en Windows |
+| iPhone (iOS 16.4 o superior) | Solo con la PWA instalada (Safari → Compartir → Agregar a inicio) | Hay que iniciar sesión y tocar **Activar avisos** dentro de la app instalada. No se probó |
+
+### 16.15 Preguntas probables
+
+1. **¿Por qué una Edge Function si no se vio en clase?**
+   Porque un push hay que cifrarlo y firmarlo, Postgres no puede, y la clave privada no puede ir en Angular. Es la única Edge Function del proyecto y hace una sola cosa.
+
+2. **¿Por qué no Firebase u OneSignal?**
+   Son servicios externos con su cuenta, su SDK y sus claves. Con una función de 61 líneas dentro del mismo Supabase alcanzaba.
+
+3. **¿Por qué pg_net y no llamar a la función desde Angular?**
+   Porque los avisos nacen en la base (el cron, `validar_qr`) sin que haya una pantalla abierta. Y si lo llamara Angular, la función quedaría abierta a cualquier usuario.
+
+4. **¿Por qué `verify_jwt` apagado? ¿No es inseguro?**
+   El JWT es para llamadas de usuarios, y acá quien llama es la base. La protección es el secreto compartido: sin él, 401.
+
+5. **¿Qué pasa si el push falla?**
+   Nada se pierde: el aviso ya está en la bandeja, que es el canal garantizado. El push es un complemento (RNF-16).
+
+6. **¿Cómo evitás que llegue dos veces con la app abierta?**
+   El aviso del sistema y el push usan el mismo `tag`, `notificacion-{id}`: el segundo reemplaza al primero.
+
+7. **¿Qué pasa si dos personas usan el mismo celular?**
+   El `endpoint` es único por navegador. Al salir se borra la suscripción; si la baja falla, la próxima cuenta que active avisos se queda con ella.
+
+Frase para el oral: "La base escribe el aviso. Un trigger se lo pasa por pg_net a una Edge Function que solo le hace caso a la base, y la función lo cifra, lo firma y se lo manda al servicio de push del celular. Si algo falla, el aviso igual está en la bandeja."
+
+---
+
+## 17. Recuperación de contraseña a fondo
+
+La sección 2.25 la resume en una tabla. Esta sección la recorre entera: qué archivos y funciones intervienen, qué hace Supabase de su lado en cada paso, y por qué termina siendo una limitación.
+
+### 17.1 En un minuto
+
+- **Qué pide el documento:** RF-02, "inicio y cierre de sesión, recuperación de contraseña".
+- **Qué está hecho:** el flujo completo, en dos pantallas. `/recuperar-clave` pide el email y Supabase manda un mail con un enlace. El enlace abre `/restablecer-clave`, donde se elige la clave nueva.
+- **Qué lo limita:** el servidor de correo que trae Supabase es de prueba. **Solo le entrega mails a las direcciones de los miembros del proyecto** y permite muy pocos envíos por hora. Para cualquier otra persona, el mail no llega nunca, y Supabase no avisa ningún error.
+- **Qué faltaría para que funcione con cualquiera:** cargar un servidor de correo propio (SMTP) en el panel de Supabase. **No hay que tocar código.**
+
+Entonces la respuesta corta es: **el código está completo y funciona; lo que no funciona para un usuario real es el envío del mail, que depende de una configuración externa que quedó fuera del alcance.**
+
+### 17.2 Las piezas
+
+| Pieza | Dónde | Qué hace |
+|---|---|---|
+| Enlace "Olvidé mi clave" | `publico/login/login.html` (línea 52) | Lleva a `/recuperar-clave` |
+| Ruta `/recuperar-clave` | `app.routes.ts` (línea 45) | `loadComponent` de `RecuperarClave`, con `invitadoGuard` |
+| `RecuperarClave` | `publico/recuperar-clave/recuperar-clave.ts` y `.html` | Formulario del email; muestra "te enviamos un enlace" |
+| `AuthApi.recuperarClave(email)` | `shared/api/auth-api.ts` (líneas 35 a 41) | `supabase.auth.resetPasswordForEmail(email, { redirectTo })` |
+| Ruta `/restablecer-clave` | `app.routes.ts` (línea 51) | `loadComponent` de `RestablecerClave`, **sin guard** |
+| Cliente de Supabase | `shared/services/supabase.client.ts` | Al arrancar, lee la sesión que trae el enlace en la URL |
+| `SesionStore` | `shared/stores/sesion-store.ts` | Guarda esa sesión en un signal y resuelve `inicializada` |
+| `RestablecerClave` | `publico/restablecer-clave/restablecer-clave.ts` y `.html` | Espera la sesión, pide la clave dos veces y la guarda |
+| `ClaveNuevaDraft` | `shared/models/auth.model.ts` | `{ clave, repetir }`: el modelo del formulario |
+| `VerClave` | `shared/components/ver-clave/` | Botón para mostrar u ocultar cada clave |
+| `AuthApi.cambiarClave(clave)` | `shared/api/auth-api.ts` (líneas 43 a 46) | `supabase.auth.updateUser({ password: clave })` |
+| `mensajeError` | `shared/utils/errores.ts` | Traduce `weak_password`, `same_password`, `over_email_send_rate_limit`, `over_request_rate_limit` y `email_address_invalid` |
+| Configuración de Auth | Panel de Supabase | Proveedor Email, largo mínimo 8, Redirect URLs, plantilla del mail y servidor de correo |
+
+No hay nada en la base de Cineverso: la clave vive en `auth.users`, que maneja Supabase. Ninguna tabla nuestra, ningún trigger y ninguna RPC la tocan.
+
+### 17.3 La configuración del panel
+
+Se hizo una sola vez en Authentication (SPEC, sección 7.1, pasos A y B):
+
+| Dónde | Qué se configuró | Para qué sirve en la recuperación |
+|---|---|---|
+| URL Configuration → Site URL | `https://tp1-sistema-cine.vercel.app` | Adónde manda Supabase si la dirección pedida no está permitida |
+| URL Configuration → Redirect URLs | `http://localhost:4200/**` y `https://tp1-sistema-cine.vercel.app/**` | Lista de direcciones a las que el enlace puede volver. `/restablecer-clave` entra por el comodín `/**` |
+| Sign In / Providers → Email | Habilitado, con largo mínimo de clave 8 y **Confirm email** apagado (D-16) | La clave nueva también la controla Supabase; si es corta responde `weak_password` |
+| Emails → Reset password | La plantilla del mail (traducirla era opcional) | El texto del mail; el enlace va en `{{ .ConfirmationURL }}` |
+| SMTP Settings | **Sin configurar**: se usa el servidor de correo de Supabase | Es lo que limita el envío (17.10) |
+
+### 17.4 Paso 1 · Pedir el enlace
+
+**La pantalla** (`recuperar-clave.ts`):
+
+```ts
+protected readonly borrador = signal({ email: '' });
+protected readonly enviando = signal(false);
+protected readonly enviado = signal(false);
+protected readonly error = signal<string | null>(null);
+
+protected readonly recuperarForm = form(
+  this.borrador,
+  (f) => {
+    required(f.email, { message: 'Ingresá tu email' });
+    email(f.email, { message: 'El email no es válido' });
+  },
+  { submission: { action: async () => this.enviar() } },
+);
+```
+
+1. **Signal Forms, como en clase:** el modelo es el signal `borrador`. Las reglas son `required` y `email`, con el mensaje en español. `submission.action` es lo que corre al enviar, y solo corre si el formulario es válido; si no, `submit` marca todos los campos y aparecen los errores.
+2. **Cuatro signals de estado:** `enviando` (para el botón), `enviado` (para cambiar de pantalla), `error` (el mensaje traducido) y el `borrador`.
+3. **`enviar()`:** pone `enviando` en `true`, limpia el error y llama a `authApi.recuperarClave(this.borrador().email.trim())`. El `trim()` saca los espacios que se cuelan al pegar el email. Si sale bien, `enviado` pasa a `true`. Si falla, `mensajeError` traduce el error. En el `finally`, `enviando` vuelve a `false` pase lo que pase.
+
+**La plantilla** (`recuperar-clave.html`):
+
+- `@if (enviado())` reemplaza el formulario por "Si hay una cuenta con ese email, te enviamos un enlace para elegir una clave nueva", con `role="status"` para que un lector de pantalla lo anuncie.
+- Si no, el formulario con `[formRoot]` y `(submit)="$event.preventDefault()"`, para que el navegador no recargue la página.
+- El campo usa `[formField]` y `@let correo = recuperarForm.email()`. Los errores se muestran con `@for` solo si el campo fue tocado y no es válido.
+- El botón tiene `[disabled]="enviando()"` y dice "Enviando…" mientras espera: un doble clic no manda dos mails.
+
+**La Api** (`auth-api.ts`):
+
+```ts
+// manda el mail con el enlace que abre la pantalla para elegir una clave nueva
+async recuperarClave(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/restablecer-clave`,
+  });
+  if (error) throw error;
+}
+```
+
+- `redirectTo` se arma con `window.location.origin`: si pedís el enlace en local vuelve a `http://localhost:4200/restablecer-clave`, y si lo pedís en Vercel, a la de Vercel. No hay una URL fija en el código.
+- Es una Api delgada, como `TaskApi`: llama, lanza el error si hay y no guarda estado.
+
+**Qué hace Supabase cuando recibe el pedido:**
+
+1. Si el email tiene cuenta, genera un **token de recuperación** de un solo uso, con vencimiento (por defecto una hora; se configura en Authentication).
+2. Arma el mail con la plantilla *Reset password* y lo manda por el servidor de correo configurado.
+3. **Si el email no tiene cuenta, responde lo mismo, sin error.** Así nadie puede usar esta pantalla para averiguar quién está registrado. Por eso la app tampoco distingue: dice "si hay una cuenta…".
+4. Si se piden demasiados mails, responde `over_email_send_rate_limit` (o `over_request_rate_limit`), que la app muestra como "Se enviaron demasiados mails. Probá de nuevo en un rato".
+
+### 17.5 Paso 2 · El mail y el enlace
+
+1. El mail trae un enlace a Supabase, no a Cineverso: `https://xrbjzgqosscoowmkwnxf.supabase.co/auth/v1/verify?token=…&type=recovery&redirect_to=…`.
+2. Al tocarlo, Supabase verifica el token:
+   - **Si es válido**, lo marca como usado, crea una sesión para ese usuario y redirige a `redirect_to`, con la sesión en el **fragmento** de la URL (lo que va después del `#`):
+     `https://tp1-sistema-cine.vercel.app/restablecer-clave#access_token=…&refresh_token=…&expires_in=…&type=recovery`
+   - **Si venció o ya se usó**, redirige con un error en el fragmento (`#error=access_denied&error_code=otp_expired…`).
+   - **Si `redirect_to` no está en las Redirect URLs**, manda a la Site URL (la portada) y el usuario nunca ve la pantalla de la clave nueva. Por eso hacen falta los comodines `/**`.
+3. **El fragmento no viaja al servidor:** el navegador no lo manda en el pedido, así que el token no queda en los registros de Vercel. Solo lo lee el JavaScript de la página.
+
+Este modo, donde la sesión llega en el fragmento, se llama **flujo implícito** y es el que usa `supabase-js` 2 por defecto cuando el cliente se crea sin opciones, como en `supabase.client.ts`. Tiene una ventaja práctica: el enlace sirve en cualquier dispositivo. Podés pedirlo en la computadora y abrir el mail en el celular. Con el otro modo (PKCE), el enlace solo funciona en el mismo navegador donde se pidió.
+
+### 17.6 Paso 3 · Angular arranca y lee la sesión del enlace
+
+Esto pasa solo, sin código propio para la recuperación:
+
+1. `supabase.client.ts` crea el cliente con `createClient(url, clave)`. Las opciones por defecto incluyen `detectSessionInUrl: true` y `persistSession: true`.
+2. Al iniciarse, `supabase-js` ve el `#access_token=…&type=recovery` en la URL, guarda la sesión en el `localStorage`, **borra el fragmento** de la barra de direcciones y emite el evento `PASSWORD_RECOVERY`.
+3. `SesionStore`, en su constructor, escucha esos eventos con `authApi.alCambiarSesion(...)`:
+
+   ```ts
+   this.authApi.alCambiarSesion((_, sesion) => {
+     this._sesion.set(sesion);
+     this.sesionLeida.set(true);
+   });
+   ```
+
+   Guarda la sesión que venga, sin mirar qué evento fue (el `_`).
+4. Con `sesionLeida` en `true`, el `effect` del store carga el perfil del usuario. Cuando termina, resuelve la promesa `inicializada`.
+5. Desde ahí, para toda la app el usuario **entró**: el menú muestra su cuenta y la sesión queda guardada.
+
+### 17.7 Paso 4 · Elegir la clave nueva
+
+**La pantalla** (`restablecer-clave.ts`):
+
+```ts
+protected readonly verificado = signal(false);
+protected readonly borrador = signal<ClaveNuevaDraft>({ clave: '', repetir: '' });
+
+protected readonly claveForm = form(
+  this.borrador,
+  (f) => {
+    required(f.clave, { message: 'Elegí una clave nueva' });
+    minLength(f.clave, 8, { message: 'La clave tiene que tener al menos 8 caracteres' });
+    required(f.repetir, { message: 'Repetí la clave' });
+    validate(f.repetir, ({ value, valueOf }) =>
+      value() && value() !== valueOf(f.clave)
+        ? { kind: 'repetir', message: 'Las claves no coinciden' }
+        : null,
+    );
+  },
+  { submission: { action: async () => this.cambiar() } },
+);
+
+constructor() {
+  // espera a que supabase lea la sesión que trae el enlace del mail
+  void this.sesion.inicializada.then(() => this.verificado.set(true));
+}
+```
+
+1. **Esperar antes de decidir:** si la pantalla mirara la sesión apenas se crea, todavía no habría ninguna, porque `supabase-js` la está leyendo de la URL, y mostraría "el enlace venció" por error. Por eso el constructor espera `sesion.inicializada` y recién ahí pone `verificado` en `true`.
+2. **Las reglas del formulario:** `required` y `minLength(8)` en la clave (el mismo mínimo que el panel de Supabase), `required` en la repetición y un `validate` propio que compara las dos. `valueOf(f.clave)` lee el valor de **otro** campo dentro de la regla de `repetir`.
+3. **`cambiar()`:** el mismo molde que `enviar()`: `guardando`, error traducido y `finally`. Llama a `authApi.cambiarClave(this.borrador().clave)` y, si sale bien, `cambiada` pasa a `true`.
+
+**La plantilla** (`restablecer-clave.html`) es una cadena de `@if` con cuatro estados, en este orden:
+
+| Estado | Condición | Qué muestra |
+|---|---|---|
+| Esperando | `!verificado()` | "Verificando el enlace…" |
+| Listo | `cambiada()` | "Listo, ya podés usar tu clave nueva" y un enlace a la cartelera |
+| Enlace inválido | `!sesion.sesion()` | "El enlace no es válido o ya venció" y un enlace para pedir otro |
+| Formulario | El resto | Las dos claves, cada una con `VerClave` |
+
+El orden importa: "listo" va antes que "inválido", y los dos después de "verificando", para que nunca aparezca un mensaje equivocado mientras carga.
+
+Cada campo usa `[type]="verClave() ? 'text' : 'password'"` y `autocomplete="new-password"`, para que el navegador ofrezca generar una clave y no complete la vieja. `<app-ver-clave [(visible)]="verClave" />` cambia ese signal con `model()`.
+
+**La Api:**
+
+```ts
+async cambiarClave(clave: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser({ password: clave });
+  if (error) throw error;
+}
+```
+
+`updateUser` manda la clave nueva a Supabase Auth con el token de la sesión que abrió el enlace. Supabase la guarda cifrada en `auth.users`. Los errores posibles ya tienen su texto en `mensajeError`:
+
+| Código | Cuándo | Mensaje |
+|---|---|---|
+| `weak_password` | No cumple el largo mínimo del panel | "La clave es muy débil: usá al menos 8 caracteres." |
+| `same_password` | Es igual a la anterior | "La clave nueva tiene que ser distinta de la anterior." |
+
+Después de guardar, **el usuario queda con la sesión iniciada**: no tiene que volver a ingresar.
+
+### 17.8 Por qué cada ruta tiene el guard que tiene
+
+| Ruta | Guard | Por qué |
+|---|---|---|
+| `/recuperar-clave` | `invitadoGuard` | Quien ya entró no necesita recuperar nada: cambia la clave desde su cuenta. El guard lo manda a la portada |
+| `/restablecer-clave` | Ninguno | El enlace del mail **inicia una sesión**. Si tuviera `invitadoGuard`, el usuario recién llegado ya figuraría como registrado y el guard lo echaría antes de que pueda elegir la clave |
+
+Las dos van con `loadComponent`: Signal Forms no entra en la carga inicial (sección 2.21).
+
+### 17.9 Todo el recorrido
+
+```text
+ Usuario             Angular                              Supabase Auth                 Servidor de correo
+    │ "Olvidé mi clave"   │                                       │                                │
+    │────────────────────►│ /recuperar-clave (invitadoGuard)      │                                │
+    │ escribe el email    │                                       │                                │
+    │────────────────────►│ resetPasswordForEmail(email,          │                                │
+    │                     │   { redirectTo: origen/restablecer })─►│ ¿tiene cuenta?                 │
+    │                     │◄──────────────── OK (siempre) ─────────│ sí: crea un token de un uso    │
+    │ "si hay una cuenta, │                                       │────── mail con el enlace ─────►│
+    │  te enviamos…"      │                                       │                                │── solo si el email
+    │                     │                                       │                                │   es del equipo
+    │ toca el enlace del mail ───────────────────────────────────►│ /auth/v1/verify                │
+    │                     │                                       │ token válido → crea la sesión  │
+    │◄──── redirige a /restablecer-clave#access_token=…&type=recovery                              │
+    │                     │ supabase-js lee el #, guarda la sesión│                                │
+    │                     │ y lo borra; SesionStore la recibe     │                                │
+    │                     │ inicializada → verificado = true      │                                │
+    │ clave nueva x2      │                                       │                                │
+    │────────────────────►│ updateUser({ password }) ────────────►│ guarda la clave en auth.users  │
+    │◄──── "Listo" ───────│◄──────────────────────────────────────│                                │
+```
+
+### 17.10 La limitación: qué pasa exactamente
+
+El problema no está en el código, sino en **quién manda el mail**. Como SMTP Settings quedó sin configurar, Supabase usa su propio servidor de correo, que está pensado solo para probar:
+
+1. **Solo le entrega mails a las direcciones de los miembros de la organización del proyecto** en Supabase. A cualquier otra dirección no le manda nada.
+2. **No avisa que no lo mandó.** `resetPasswordForEmail` responde bien igual, como cuando el email no tiene cuenta. La app muestra "te enviamos un enlace" y el mail nunca llega. Ni Angular ni el usuario tienen forma de enterarse.
+3. **Tiene un límite muy bajo de envíos por hora para todo el proyecto.** Si se pasa, la app muestra "Se enviaron demasiados mails. Probá de nuevo en un rato".
+4. Aun cuando llega, puede caer en spam, porque sale de un remitente genérico de Supabase.
+
+**En la práctica:**
+
+| Quién lo usa | ¿Funciona? |
+|---|---|
+| Vos, con un email que es miembro del proyecto en Supabase | Sí, de punta a punta |
+| El profe, un cliente de prueba o cualquier otra persona | No: ve el mensaje de éxito, pero el mail no llega |
+
+Por eso el README lo tiene en "Limitaciones conocidas" y el SPEC lo registra como decisión D-16.
+
+**La misma razón explica la otra decisión del registro:** la confirmación de email está apagada. Si estuviera prendida, quien se registra con un email que no es del equipo nunca recibiría el mail de confirmación y no podría entrar nunca. Apagarla deja la cuenta activa al registrarse.
+
+### 17.11 Por qué no se resolvió
+
+La solución es cargar un **SMTP propio** en Authentication → SMTP Settings: el servidor, el puerto, el usuario, la clave y el remitente de un servicio de correo como Gmail (con una clave de aplicación), Brevo, SendGrid o Resend. **El código no cambia ni una línea:** `resetPasswordForEmail` hace lo mismo y solo cambia quién entrega el mail.
+
+No se hizo por estos motivos:
+
+1. **El documento de requerimientos no pide un SMTP propio.** RF-02 pide la recuperación, y el flujo está completo. El SMTP propio quedó fuera de alcance desde el principio (SPEC, sección 1.4).
+2. **Suma una cuenta externa y credenciales que cuidar:** una clave de correo que tendría que vivir en el panel de Supabase y renovarse si se filtra.
+3. **Algunos servicios piden más de lo que tiene el proyecto.** Por ejemplo, Resend pide verificar un dominio propio para escribirle a cualquier dirección, y Cineverso no tiene dominio: usa el de Vercel.
+4. **Se priorizó lo que pedía el documento.** En el SPEC (riesgos, sección 13.3) quedó anotado como "un SMTP propio solo si el docente lo exige", y no lo exigió.
+
+### 17.12 Qué haría para que funcione con cualquiera
+
+1. Crear la cuenta de correo (por ejemplo, Gmail con verificación en dos pasos y una clave de aplicación).
+2. En Supabase, Authentication → SMTP Settings: activar **Enable custom SMTP** y cargar el servidor (`smtp.gmail.com`), el puerto (465 o 587), el usuario, la clave de aplicación, el remitente y el nombre ("Cineverso").
+3. En Authentication → Rate Limits, subir el límite de mails por hora, que con un SMTP propio deja de estar fijo.
+4. Traducir la plantilla *Reset password* en Authentication → Emails.
+5. Probar con un email que no sea del equipo.
+6. Si se quisiera, prender **Confirm email**: con un SMTP propio, el mail de confirmación también llegaría.
+
+Nada de esto toca Angular, la base ni el repo.
+
+### 17.13 Detalles finos que conviene conocer
+
+- **La pantalla no distingue una sesión de recuperación de una normal.** `SesionStore` guarda la sesión sin mirar el evento, así que alguien que ya entró y abre `/restablecer-clave` a mano también ve el formulario y puede cambiar su clave sin escribir la actual. No abre una puerta nueva: para eso ya tiene que tener la sesión iniciada, y con ella podría hacer cualquier otra cosa de su cuenta. Supabase tiene una opción, **Secure password change**, que exige volver a ingresar para cambiar la clave. Viene apagada y en el SPEC no figura que se haya prendido: revisalo en Authentication → Sign In / Providers → Email si te lo preguntan.
+- **Un enlace vencido con otra sesión abierta:** si en ese navegador ya había una sesión, `supabase-js` no la borra al fallar el enlace, y la pantalla mostraría el formulario para esa cuenta en lugar de "el enlace venció".
+- **Algunos correos "abren" los enlaces solos.** Ciertos servicios (por ejemplo, la protección de enlaces de Outlook) visitan el enlace para revisarlo antes que el usuario. Eso gasta el token, que es de un solo uso, y cuando la persona lo toca ve "el enlace no es válido o ya venció".
+- **No está registrado que se haya probado de punta a punta.** El SPEC dice "en la demo se prueba con una dirección del equipo", pero no hay ninguna anotación de esa prueba. **Hacela antes del oral** con tu email (el que es miembro del proyecto), una sola vez, para no gastar el límite por hora.
+
+### 17.14 Preguntas probables
+
+1. **¿La recuperación funciona?**
+   Sí: el flujo completo está hecho y funciona con un email del equipo del proyecto. Lo que no funciona para cualquiera es el envío del mail, porque el servidor de correo de Supabase es de prueba y solo le escribe al equipo.
+
+2. **¿Por qué no aparece ningún error si el mail no llega?**
+   Porque Supabase responde igual para no revelar qué emails tienen cuenta. Si dijera "no se pudo enviar", también diría quién está registrado.
+
+3. **¿Cómo sabe la pantalla nueva quién es el usuario si no ingresó?**
+   El enlace del mail inicia sesión. Supabase verifica el token y vuelve a la app con la sesión en la URL; `supabase-js` la lee sola y `SesionStore` la guarda.
+
+4. **¿Por qué `/restablecer-clave` no tiene guard?**
+   Porque el enlace ya inicia una sesión, e `invitadoGuard` echaría al usuario antes de que elija la clave.
+
+5. **¿Qué impide que alguien desvíe el enlace a otro sitio?**
+   La lista de Redirect URLs del panel: Supabase solo vuelve a localhost o a Vercel. Si `redirectTo` apunta a otro lado, manda a la portada.
+
+6. **¿Dónde se guarda la clave nueva? ¿La ves vos?**
+   En `auth.users`, que maneja Supabase, cifrada. No pasa por ninguna tabla nuestra y nadie la puede leer, ni el admin.
+
+7. **¿Qué tendrías que cambiar para que funcione con cualquiera?**
+   Nada del código: cargar un SMTP propio en el panel de Supabase.
+
+Frase para el oral: "La recuperación está implementada completa: pido el mail con `resetPasswordForEmail`, el enlace inicia una sesión de recuperación y la pantalla nueva guarda la clave con `updateUser`. Lo que la limita es el correo de prueba de Supabase, que solo le escribe al equipo del proyecto. Con un SMTP propio funciona para cualquiera sin tocar una línea de código."
+
+---
+
+## 18. La cursada, clase por clase, en Cineverso
+
+Esta sección recorre los ocho PDF de la cursada (`clase_1.pdf` a `clase_8.pdf`) tema por tema y dice, para cada uno, **dónde está en el proyecto, cómo está hecho y qué decisión técnica se tomó.** Las referencias van como `clase·lámina` (`4·25` es la Clase 4, lámina 25).
+
+Las clases vienen de a pares: la impar presenta los temas y la par los baja a código sobre TaskFlow. Por eso la sección tiene cuatro bloques:
+
+| Bloque | Clases | Temas |
+|---|---|---|
+| 18.1 | 1 y 2 | Introducción a Angular 22, TypeScript, componentes y binding |
+| 18.2 | 3 y 4 | Ruteo, input y output, directivas estructurales y Signal Forms |
+| 18.3 | 5 y 6 | Servicios, Supabase (base, Realtime, Auth y Storage) y deploy |
+| 18.4 | 7 y 8 | Guards, pipes, directivas propias y service worker (PWA) |
+| 18.5 | — | Lo que mostraron las clases y **no** se usó, y por qué |
+
+### 18.1 Clases 1 y 2 · Introducción, TypeScript, componentes y binding
+
+#### Introducción a Angular
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| SPA o MPA (1·7) | Toda la app | Una SPA: un solo `index.html` y el router cambia las pantallas sin recargar | Es una app interactiva (mapa en vivo, checkout, panel), el caso que la lámina asigna a SPA. Sin SSR: no hace falta posicionamiento en buscadores y la PWA necesita funcionar en el cliente |
+| La CLI: `ng new`, `ng serve`, `ng generate`, `ng build`, `ng test` (2·6) | `angular.json`, `package.json` | El proyecto se generó con el CLI 22.2 y cada componente, guard, pipe y directiva con `ng generate`. Los archivos tienen los nombres sin sufijo del CLI 22 (`login.ts`, no `login.component.ts`) | `skipTests` en los generadores de `angular.json`: no se generan los specs "should create", porque solo se prueban funciones puras (RNF-23) |
+| Los archivos del proyecto (2·7) | Raíz y `src/` | `main.ts`, `index.html`, `styles.css`, `app.ts`, `app.config.ts`, `app.routes.ts` y `public/` cumplen el mismo rol que en TaskFlow | Se sumaron `environments/` (Clase 6) y `ngsw-config.json` (Clase 8) |
+| `bootstrapApplication` y providers, sin NgModules (2·8) | `src/main.ts`, `src/app/app.config.ts` | `bootstrapApplication(App, appConfig)`. `appConfig.providers` tiene `provideRouter(routes, withComponentInputBinding())`, `LOCALE_ID`, `DATE_PIPE_DEFAULT_OPTIONS` y `provideServiceWorker` | No hay `provideHttpClient`: el proyecto no usa HttpClient (18.5). `main.ts` suma `registerLocaleData(es-AR)` para fechas y pesos argentinos (RNF-21) |
+| Angular 22: OnPush por defecto y zoneless (1·6, 2·9) | Todos los componentes; `angular.json` | Ningún componente declara `changeDetection` (usan OnPush, que es el default) y no hay `zone.js` en los polyfills | Como pide la lámina 2·21, el estado se cambia con `set()` o `update()` con objetos nuevos, por ejemplo `this._peliculas.update((lista) => [...lista, peliculaId])` en `AlertasStore` |
+| Decorador `@Service()` (1·6, 2·9) | `shared/api/`, `stores/`, `services/` | No se usa: todo servicio lleva `@Injectable({ providedIn: 'root' })` | El código de clase usa `@Injectable`, y la lámina dice que sigue siendo válido. Se priorizó lo que muestra el código de TaskFlow |
+
+#### TypeScript
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Tipado estático e inferencia (2·11) | `tsconfig.json` | `strict` y `strictTemplates` activados | El proyecto se generó sin ellos; con `strictTemplates`, un campo mal escrito en el HTML no compila (RNF-08) |
+| Union types en lugar de enums (2·12) | `shared/models/` | `Formato = '2D' \| '3D' \| '4D' \| '5D'`, `Rol`, `Clasificacion`, `EstadoButaca`, `PasoCompra`, `Sector` | Como recomienda la lámina: no generan código y se comparan en línea en el template (`butaca().tipo === 'vip'`). En la base, el mismo criterio: `text` con `check (... in (...))` |
+| Uniones discriminadas (2·12) | `shared/models/validacion.model.ts` | `ResultadoValidacionModel` tiene una variante por `resultado` (`valido`, `ya_usado`, `fuera_de_horario`…), cada una con sus campos | `ResultadoValidacion` hace `@switch` sobre `resultado` y en cada rama el compilador sabe qué campos existen |
+| Interfaces con sufijo `Model` (2·13) | `shared/models/*.model.ts` (18 archivos) | `PeliculaModel`, `FuncionModel`, `CompraModel`, `PerfilModel`… | Con los nombres de columna de la base (`fecha_estreno`), para que `data as PeliculaModel` sea cierto sin mapear (sección 2.19) |
+| Genéricos (2·13) | `rules/sala.ts`, `rules/precio.ts`, `models/sala.model.ts` | `agruparButacas<T>`, `entradasConCombos<T>` y `FilaButacas<T>` sirven para la butaca del editor y para la del mapa | Una sola función para dos tipos parecidos, sin duplicar |
+| Utility types (2·14) | `shared/models/` | `Omit<CategoriaModel, 'id'>` para los borradores, `Pick<…>` para `ButacaCambios` y `PeliculaFila`, `Partial<…>` para `PerfilPatch`, `Record<Rol, string>` para las etiquetas, `Exclude<Rol, 'cliente'>` para `RolInterno` | "Un solo modelo de dominio y todo lo demás derivado": si cambia una columna, el compilador marca cada derivado |
+| Clases y decoradores (2·15) | Todo el proyecto | `@Component`, `@Injectable`, `@Pipe` y `@Directive`; las interfaces para los datos y las clases para el comportamiento | — |
+
+#### Componentes
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Árbol de componentes: los datos bajan, los eventos suben (2·5) | `publico/compra/` | `Checkout` contiene los cinco pasos; `PasoButacas` contiene `MapaButacas`, que emite la butaca tocada | Los pasos no reciben `input`: comparten `CompraStore` y `ButacasStore` (sección 13.5) |
+| Componente standalone con selector, template e imports (1·13, 2·17) | Los 62 componentes | Cada uno con `selector`, `templateUrl`, `styleUrl` e `imports` propios | Prefijo `app-` en todos (`app-mapa-butacas`) |
+| `input()`: `required`, valor por defecto, `transform` y `alias` (2·19) | `MapaButacas`, `TarjetaPelicula`, `VistaComprobante`, `HighlightButaca`, `Checkout` | `input.required<ButacaVista[]>()`, `input(false)`, `input.required<number, unknown>({ transform: numberAttribute })` y `input.required({ alias: 'appHighlightButaca' })` | `required` donde el componente no tiene sentido sin el dato: si el padre se olvida, no compila |
+| `output()` (2·20) | `MapaButacas` (`alternada`), `EscanerQr` (código leído), `MenuPrincipal` (`salir`), `ContadorRetencion` (vencida), `SelectorHorario`, `FormularioPerfil` (`guardado`) | El hijo avisa y el padre decide | `MenuPrincipal` emite `salir` y la raíz da de baja el push y cierra la sesión: el menú no sabe de Supabase |
+| `model()` (2·20) | `admin/selector-*`, `selector-dias`, `selector-fecha`, `selector-hora`, `estrellas`, `ver-clave`, `formulario-perfil` | `visible = model(false)` en `VerClave`; el padre usa `[(visible)]="verClave"` | Controles propios que funcionan como un campo más del formulario |
+| Ciclo de vida y hooks (1·15, 2·21) | `checkout.ts`, `escaner-qr.ts`, stores | `ngOnDestroy` en el checkout (llama a `reiniciar()`) y en el escáner (apaga la cámara). La carga inicial va en el constructor con `effect`, sin `ngOnInit` | Como dice la lámina: `computed` y `effect` reemplazan a `ngOnChanges`, y `ngOnDestroy` queda para limpiar recursos |
+| Encapsulación de estilos y `:host` (2·22) | Los `.css` de cada componente | Encapsulación emulada (la de por defecto); `:host` aparece en 56 hojas de estilo | Los colores y espacios comunes van como variables en `styles.css`; cada componente estila solo lo suyo |
+
+#### Binding y templates
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Interpolación y property binding (1·17, 2·24) | Todas las plantillas | `{{ pelicula().titulo }}`, `[disabled]="enviando()"`, `[type]="verClave() ? 'text' : 'password'"` | — |
+| Event binding y `$event` (1·18, 2·25) | Formularios, `MenuPrincipal`, `BandejaNotificaciones` | `(submit)="$event.preventDefault()"` en cada formulario; `(keydown.escape)` cierra el menú y la bandeja | Las expresiones de `{{ }}` y `[ ]` leen signals o `computed`; los cálculos van en `( )` o en el store, como pide la lámina 2·25 |
+| Class y style binding (1·18, 2·26) | `HighlightButaca`, `MenuPrincipal`, `ContadorRetencion` | `[class.butaca--vip]` en cada butaca, `[class.abierto]` en los grupos del menú, `[class.urgente]` en el contador cuando queda poco tiempo y `[style.--i]` (una variable de CSS por elemento del menú) | Los estados visuales se declaran en el template, sin tocar el DOM a mano |
+| Control flow `@if`, `@for` y `@switch` (1·19, 2·26) | Todas las plantillas | `@switch` en el checkout, el resultado de validación y el estado de la compra; `@for` con `track` siempre | No hay ningún `*ngIf` ni `*ngFor` (RNF-04) |
+
+### 18.2 Clases 3 y 4 · Ruteo, input y output, directivas estructurales y formularios
+
+#### Ruteo
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| `provideRouter` y `<router-outlet>` (4·5) | `app.config.ts`, `app.html` | `provideRouter(routes, withComponentInputBinding())`; el outlet va en la raíz, debajo del menú | — |
+| `Routes` como array tipado: parámetros, redirección y comodín (3·6, 4·6) | `app.routes.ts` | 37 rutas; `peliculas/:peliculaId`, `{ path: 'admin', redirectTo: 'admin/peliculas', pathMatch: 'full' }` y `{ path: '**', redirectTo: '' }` | Como en la tabla final de TaskFlow (8·8), lo desconocido vuelve a la portada en lugar de una página 404. El orden importa: `admin/peliculas/nueva` va antes de `admin/peliculas/:peliculaId` |
+| Carga diferida con `loadComponent` (3·6) | `app.routes.ts` | Todas las pantallas menos `Inicio`, `Comprobantes` y `Privacidad` | `Comprobantes` va sin diferir porque tiene que abrir sin conexión. Se descartó `loadChildren` por área (sección 2.11) |
+| Navegación declarativa y programática (3·7, 4·7) | `MenuPrincipal`, pantallas | `routerLink` y `routerLinkActive="activo"` en el menú y en la botonera del candy; `queryParams` para el `volver` del login (`BotonAlerta`, ficha); `router.navigateByUrl(...)` después de ingresar o salir | `volver` pasa por `rutaSegura` (`utils/rutas.ts`): solo acepta rutas internas, para que un enlace armado no lleve a otro sitio |
+| El parámetro de la URL como `input` (3·10, 4·8) | `checkout.ts`, `pelicula-form.ts`, `funcion-form.ts`, `sala-butacas.ts` | `peliculaId = input.required<number, unknown>({ transform: numberAttribute })` gracias a `withComponentInputBinding` | Sin `ActivatedRoute` ni suscripciones, como en `TaskDetail` |
+
+#### Input y output en profundidad
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| `input.required`, `transform` y `alias` (4·10, 4·11) | `checkout.ts`, `highlight-butaca.ts`, `mascara-entrada.ts` | `numberAttribute` convierte el texto de la URL en número; `alias` deja que la directiva reciba su dato con su propio nombre (`[appHighlightButaca]="butaca"`) | No se usa `booleanAttribute`: ningún componente recibe un atributo booleano suelto |
+| `model()` como el `PriorityPicker` (4·12) | `admin/selector-generos/` y el resto de los selectores | `SelectorGeneros` recibe y devuelve la lista de géneros elegidos con `model()`, y `PeliculaForm` lo usa con `[formField]` | Es la técnica de clase para un control propio (sección 2.21) |
+| `output()` tipado: el hijo avisa, el padre decide (4·13) | `escaner-qr.ts` → `validacion.ts` | `EscanerQr` emite el código leído y `Validacion` decide qué hacer con él | El escáner no sabe de validaciones: se podría reutilizar |
+
+#### Directivas estructurales y control flow
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| `ng-template`, `TemplateRef` y `ViewContainerRef` (3·13, 4·15) | `shared/directives/restrict-edad.ts` | `*appRestrictEdad` inyecta `TemplateRef` y `ViewContainerRef` y llama a `createEmbeddedView` o `clear` | Es la única estructural propia; el resto es control flow |
+| `*ngIf` y `*ngFor` como legado (3·14, 4·16) | — | No aparecen en el proyecto | "Código nuevo → control flow, siempre" (4·18) |
+| `@empty`, `@let` y variables del loop (4·18) | Listados y formularios | `@empty` en 23 plantillas (la lista vacía sin un `@if` aparte); `@let` en 29 (por ejemplo, `@let correo = recuperarForm.email()`); `$index` en 8 | — |
+
+#### Signal Forms
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| El formulario nace de un signal del dominio (3·17, 4·20) | Las 23 pantallas con formulario | `borrador = signal<ClaveNuevaDraft>({ clave: '', repetir: '' })` y los `*Draft` de `models/` | Los borradores son tipos aparte (`PeliculaDraft`), porque el formulario trabaja con texto y la fila con fechas y números |
+| `form()` y `[formField]` (3·18, 4·21) | Ídem | `form(this.borrador, reglas, { submission })` y `[formField]="claveForm.clave"` | — |
+| Validación declarada junto al formulario (3·19, 4·22) | Ídem | `required` (55 usos), `validate` (31), `min` (15), `maxLength` (14), `max` (7), `pattern` (6), `email` (4) y `minLength` (3), todos con `{ message }` en español | Las reglas que también garantiza la base (edad, precios, fechas) llaman a la misma regla pura de `rules/` |
+| Los errores son signals: `@if` + `@for` (4·23) | Ídem | `@if (campo.touched() && !campo.valid()) { @for (e of campo.errors(); track e.kind) {...} }` | — |
+| Envío con `[formRoot]` y `submission.action` (4·24) | Ídem | `[formRoot]="claveForm"` y `submission: { action: async () => this.cambiar() }` | `onInvalid: 'touch'` no se escribe: en Angular 22.2 `submit` ya marca todos los campos y escrito como en la lámina no compila (sección 12.3) |
+| El mismo formulario da de alta y edita (4·25) | `admin/pelicula-form/` | `/admin/peliculas/nueva` y `/admin/peliculas/:peliculaId` usan `PeliculaForm`; un `effect` lee el `peliculaId` y, si hay uno, precarga con `borrador.set(borradorDesdePelicula(pelicula))` | Idéntico a `TaskForm`: la ruta decide y un `set()` precarga |
+| Validador propio (3·19) | `shared/validators/butacas-contiguas.ts` | `butacasContiguas(campo)` es una regla sobre `validate()` que llama a `motivoNoContiguas` | RNF-28 y RN-25: el motivo se muestra antes de pagar y la base lo vuelve a controlar |
+
+### 18.3 Clases 5 y 6 · Servicios, Supabase, Auth, Storage y deploy
+
+#### Servicios e inyección
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| El componente muestra, el servicio consulta (5·5) | `shared/api/` (21 clases) | Una Api por dominio que llama a Supabase, lanza el error y devuelve datos | Separa la pantalla del backend (RNF-07) |
+| `providedIn: 'root'` e `inject()` (5·5) | Stores, Apis y servicios | Una sola instancia para toda la app; `private readonly authApi = inject(AuthApi)` | `inject()` también se usa dentro de los guards funcionales, como dice la lámina |
+| HttpClient, `toSignal` y `httpResource` (5·6, 5·7) | — | No se usan | Supabase trae su propio cliente con promesas, como anticipa la lámina 5·7: "mismo principio, todo termina en un signal" (18.5) |
+
+#### Supabase: base de datos
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Crear el proyecto y la tabla (6·5) | `supabase/sql/` | Scripts pegados en el SQL Editor, cada uno entre `begin;` y `commit;` | Sin CLI ni migraciones, como en clase (sección 2.18) |
+| La tabla en SQL: el dominio se valida dos veces (5·10) | `tp1-sistema-cine.sql` y `rules/` | `check` en las columnas (por ejemplo, el descuento de preventa entre 0 y 100) y las mismas reglas en el formulario | Es la idea de la sección 2.1 llevada a todo el proyecto: la interfaz anticipa y la base garantiza |
+| RLS con `auth.uid()` (5·10) | Políticas de las 28 tablas | Políticas "dueño de la fila" (`usuario_id = auth.uid()`) más un `for all` del admin | Lo crítico (comprar, validar, cancelar) va además por RPC, porque RLS no puede validar entre tablas (sección 2.4) |
+| El cliente: `npm install`, environment y `createClient` (6·6) | `shared/services/supabase.client.ts` | `export const supabase = createClient(environment.supabaseUrl, environment.supabaseAnonKey)` | Un solo cliente para toda la app; solo lo importan las Apis |
+| El store sobre datos reales (6·7) | `stores/cartelera-store.ts` | `cargar()` trae la cartelera y la vuelca al signal | En TaskFlow el store llama directo a la base. Acá se separó: el store llama a la Api, como `TaskApi` del código de clase |
+| CRUD con `insert().select().single()` y "error primero" (6·8) | `candy-api.ts`, `pelicula-api.ts`, `genero-api.ts`, `perfil-api.ts`, `configuracion-api.ts` | Cada mutación revisa `error` antes de seguir: `if (error) throw error` | Los ABM del admin usan la Api directa, sin store (sección 13.5) |
+
+#### Supabase: Realtime
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Habilitar la tabla y suscribirse (5·11, 6·10) | `tp1-sistema-cine.sql`, `ocupacion-api.ts`, `notificacion-api.ts` | `alter publication supabase_realtime add table public.ocupaciones, public.notificaciones` y `.channel('ocupaciones-cambios').on('postgres_changes', ...)` | Toda la tabla, filtrada en el callback, como el canal de `tasks` (se descartó el `filter` en la suscripción, sección 12.2) |
+| Los eventos actualizan el signal (6·11) | `butacas-store.ts`, `notificaciones-store.ts` | `switch (cambio.eventType)` con `INSERT`, `UPDATE` y `DELETE`, igual que `applyChange` | — |
+| Buenas prácticas: cerrar el canal, RLS y carga inicial (6·13) | `ButacasStore.reiniciar()`, `NotificacionesStore` | `removeChannel` en `reiniciar()`, llamado desde el `ngOnDestroy` del checkout. RLS activa: la bandeja solo recibe los avisos propios | Un ajuste: **primero escucha y después lee**, para no perder un cambio que llegue entre la carga y la suscripción |
+
+#### Supabase: Auth y Storage
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Registro y login con email (5·13) | `auth-api.ts`, `publico/registro/`, `publico/login/` | `signUp` y `signInWithPassword` | El registro tiene dos pasos para reutilizar el formulario de perfil (sección 2.21) |
+| OAuth con GitHub (5·14, 6·15) | `auth-api.ts` (`ingresarConProveedor`) | `signInWithOAuth({ provider, options: { redirectTo } })` | Se sumó Google con el mismo mecanismo (RF-01) |
+| La sesión como signal con `onAuthStateChange` (5·13) | `stores/sesion-store.ts` | `alCambiarSesion((_, sesion) => this._sesion.set(sesion))` | `listo()` espera además el perfil, porque el rol vive en `perfiles` (sección 2.21) |
+| El componente de login (6·16) | `publico/login/` | Email y clave, GitHub y Google, y el "Acceso para la corrección" | Mismo nombre y ruta que en la lámina (`Login`, `/login`) |
+| Proteger la ruta con un guard; "el guard no es seguridad" (6·17) | `shared/guard/` | Guards funcionales con `inject()` que devuelven `true` o `router.parseUrl(...)` | La seguridad la dan el RLS y las RPC (sección 2.11) |
+| Storage: subir y `getPublicUrl` (5·15, 6·18) | `api/imagen-api.ts` | `upload` a `posters` o `productos` y `getPublicUrl`; la ruta es `{id}/{nombre normalizado}` | Buckets **públicos** (son imágenes del catálogo, sin datos personales) que **solo el admin escribe**. TaskFlow usa uno privado por usuario porque guarda adjuntos personales |
+
+#### Deploy
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Environments y claves: la publicable va al navegador, `service_role` nunca (5·19, 6·20) | `src/environments/`, `angular.json` | `environment.ts` y `environment.prod.ts` con `supabaseUrl`, `supabaseAnonKey` y `vapidPublicKey`; `fileReplacements` en producción | Nadie usa `service_role`: ni para las cuentas internas (sección 2.16) ni para el push (16.11) |
+| GitHub y Vercel: cada push a `main` despliega (5·18, 6·21 a 6·23) | Repo privado y Vercel | Preset Angular con salida `dist/tp1-sistema-cine/browser` | Las claves van en los archivos de entorno y no en las variables de Vercel: son públicas por diseño y Angular las necesita al compilar |
+| Errores típicos: el refresco de una ruta (6·27) | — | Sin `vercel.json`: el preset de Vercel manda cualquier ruta a `index.html` | — |
+
+### 18.4 Clases 7 y 8 · Guards, pipes, directivas y service worker
+
+#### Guards
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| La familia completa: funciones con `inject()` que devuelven `true` o un `UrlTree` (7·5) | `shared/guard/` | Los seis guards son funciones (`CanMatchFn`, `CanActivateFn`, `CanDeactivateFn`) y redirigen con `router.parseUrl(...)` | Se usó la variante con `await sesion.listo()`, porque el rol llega después que la sesión |
+| `canActivate` (7·6, 8·5) | `invitado-guard.ts`, `puede-comprar-guard.ts` | `invitadoGuard` saca al registrado del login; `puedeComprarGuard` manda a completar el perfil antes de comprar | — |
+| `canDeactivate` (7·6, 8·6) | `pending-changes-guard.ts` | Recibe la pantalla y le pregunta `cambiosPendientes()`; si hay, `confirm(pantalla.mensajeSalida())` | Una interfaz `ConCambiosPendientes` en lugar de atarlo a un solo componente: lo usan 19 rutas. En los formularios, `cambiosPendientes()` lee el `dirty()` del formulario, como el `dirty` de `TaskForm` |
+| `canMatch` con carga diferida (7·7) | `admin-guard.ts`, `empleado-guard.ts`, `cliente-guard.ts` | `canMatch: [adminGuard]` en cada ruta del admin: sin el rol, el chunk ni se descarga | Un guard por rol y no una fábrica `rolGuard(roles)`, para que cada uno se lea como el `adminGuard` de la lámina |
+| `resolve` con `withComponentInputBinding` (7·7, 8·7) | `pelicula-resolver.ts`, `pelicula-detalle.ts` | `ResolveFn` que trae la película; llega a la ficha como `input` | La ficha nace con su película, sin estado vacío |
+| La tabla de rutas como política de acceso (8·8) | `app.routes.ts` | Pública, `canActivate`, `canMatch` por rol, `canDeactivate` en formularios y `resolve` en la ficha | Se lee de arriba hacia abajo como la tabla final de TaskFlow |
+
+#### Pipes
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| `@Pipe` + `transform()` (7·10, 8·10) | `shared/pipes/` | `duracion` (minutos → "2 h 15 min"), `precioArs` (monto → "$ 12.500,00") y `edad` | La lógica está en `rules/formato.ts` y `rules/edad.ts`: el pipe solo la llama, y la regla se prueba con Vitest |
+| Pipe con argumento (8·11) | `edad-pipe.ts` | `transform(fechaNacimiento, aFecha = new Date())`: `{{ nacimiento \| edad }}` o con una fecha | Con valor por defecto, el uso simple queda limpio, como `priorityBadge` |
+| Pura o impura (7·11, 8·12) | — | Las tres son puras | Para el tiempo que corre (la cuenta regresiva de la retención) se usó la "alternativa seria" de la lámina 8·12: un signal `_ahora` con intervalo en `ButacasStore` y un `computed`, no una pipe impura |
+
+#### Directivas
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| Tres sabores: componente, atributo y estructural (7·13) | `shared/directives/` | Dos de atributo (`appHighlightButaca`, `appMascara`) y una estructural (`*appRestrictEdad`) | El criterio de la lámina: si modifica un elemento que ya existe, atributo; si decide si un bloque existe, estructural |
+| Directiva de atributo con `host` y signals (7·14, 8·15) | `highlight-butaca.ts` | `host` con `[class.butaca--vip]`, `[class.butaca--vendida]`, `[attr.aria-label]`, `[attr.aria-pressed]`; el dato entra por `input.required` con `alias` | En lugar de un hover, pone el estado de cada butaca y su descripción para lectores de pantalla (RNF-27, RNF-20) |
+| La misma directiva en varias pantallas (8·16) | `mascara-entrada.ts` | `appMascara` se usa en siete plantillas: perfil, pago, película, cupones, reportes, auditoría y el selector de hora | "Si el diseño cambia, se toca un archivo" |
+| Estructural propia: `TemplateRef`, `ViewContainerRef` y `effect` (7·15, 8·17-18) | `restrict-edad.ts` | Un `effect` lee la clasificación y la edad y llama a `createEmbeddedView` o a `clear` | Muestra el bloque Comprar solo si la edad alcanza. El motivo no lo muestra la directiva: lo muestra el componente con `@if` (sección 2.12) |
+
+#### Service worker y PWA
+
+| Tema (lámina) | Dónde está | Cómo está implementado | Decisión técnica |
+|---|---|---|---|
+| `ng add @angular/pwa` (7·17-18, 8·20) | `ngsw-config.json`, `app.config.ts`, `public/` | El comando generó el service worker, el manifest y los íconos | Íconos propios en lugar de los de ejemplo (8·22) |
+| La política de caché: `assetGroups` y `dataGroups` (7·18, 8·21) | `ngsw-config.json` | Grupos `inicial` (prefetch), `diferido` (lazy) y `recursos` (fuentes e íconos); datos `cartelera` con `freshness` e `imagenes` con `performance` | **Desvío a propósito:** la lámina precachea todo el JS; acá las pantallas de las áreas van en `lazy`, para que `canMatch` siga ahorrando la descarga (sección 12.3) |
+| `freshness` o `performance` (7·19) | `ngsw-config.json` | La cartelera, red primero; las imágenes, caché primero | Como la tabla de la lámina: lo que cambia seguido, red primero; lo casi estático, caché primero |
+| El manifest (8·22) | `public/manifest.webmanifest` | `display: standalone`, nombre, `lang` es-AR, colores e íconos `any` y `maskable` | — |
+| Actualizaciones con `SwUpdate` (7·19, 8·23) | `app.ts`, `app.html` | `swUpdate.versionUpdates` con `VERSION_READY` pone un signal en `true` y un `@if` muestra el aviso | Copia directa de la lámina |
+| La prueba sin red (8·24) | `ng build` y `npx http-server` | Se prueba con el build servido, porque `ng serve` no registra el service worker | Además, `publico/comprobantes/` abre sin conexión con `localStorage` (RNF-15) |
+
+### 18.5 Lo que mostraron las clases y no se usó
+
+| Tema (lámina) | Por qué no se usó | Qué se usó en su lugar |
+|---|---|---|
+| HttpClient, `toSignal` y `httpResource` (5·6, 5·7) | Todo el backend es Supabase, que trae su propio cliente con promesas | `supabase-js` en las Apis, y el resultado se vuelca a un signal en el store |
+| `@Service()` (1·6, 2·9) | El código de clase usa `@Injectable` y la lámina dice que sigue siendo válido | `@Injectable({ providedIn: 'root' })` |
+| `*ngIf`, `*ngFor` y `ng-template` (3·14, 4·16) | Son el modelo anterior; la lámina 4·18 dice "código nuevo → control flow, siempre" | `@if`, `@for` y `@switch` |
+| Pipe impura (8·12) | La única cosa que "envejece sola" es la cuenta regresiva, y la lámina propone la alternativa con un signal | Un signal con intervalo y un `computed` en `ButacasStore` |
+| Página 404 propia (4·6) | Con 37 rutas, una URL desconocida vuelve a la portada, como la tabla final de 8·8 | `{ path: '**', redirectTo: '' }` |
+| `booleanAttribute` (4·11) | Ningún componente recibe un atributo booleano suelto | — |
+| Chequeo exhaustivo con `never` (2·12) | Los `@switch` de las plantillas cubren todos los casos a la vista; no hay `switch` de TypeScript que lo necesite | — |
+| `ngOnInit`, `afterNextRender` y `afterEveryRender` (2·21) | La carga inicial va en el constructor con `effect`, y ningún componente mide el DOM | `effect` y `ngOnDestroy` |
+| SSR e hidratación (1·7) | No hace falta posicionamiento en buscadores, y la app tiene que funcionar sin conexión | SPA con service worker |
+| Animaciones con `animate.enter` y `animate.leave` (1·6) | Los desplegables del menú no agregan ni quitan elementos: abren y cierran | `transition` de CSS (sección 2.24) |
+| Variables de entorno en Vercel (5·19, 6·20) | La URL y las claves del front son públicas por diseño y Angular las necesita al compilar | `environment.ts` y `environment.prod.ts` con `fileReplacements` |
+| Bucket privado por usuario (5·15, 6·18) | Las imágenes son del catálogo, no de los usuarios | Buckets públicos de solo lectura, con escritura solo del admin |
+
+Frase para el oral: "Cada tema de la cursada tiene su lugar en Cineverso, con la técnica de la lámina. Donde me aparté fue a propósito: el service worker no precachea el admin para que `canMatch` siga sirviendo, la cuenta regresiva usa un signal en vez de una pipe impura, como sugiere la propia lámina, y no usé HttpClient porque todo el backend es Supabase."
